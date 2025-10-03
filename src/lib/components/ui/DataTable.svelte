@@ -130,9 +130,9 @@
 					on:click={handleSearchSubmit}
 					variant="primary"
 					size="sm"
-					className="flex items-center gap-2 px-4"
+					className="flex items-center justify-center gap-2 px-3 sm:px-4 min-w-[44px]"
 				>
-					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
@@ -140,17 +140,17 @@
 							d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
 						/>
 					</svg>
-					Buscar
+					<span class="hidden sm:inline whitespace-nowrap">Buscar</span>
 				</Button>
 				{#if searchTerm}
 					<Button
 						on:click={handleClearSearch}
 						variant="outline"
 						size="sm"
-						className="flex items-center gap-2 px-4"
+						className="flex items-center justify-center gap-2 px-3 sm:px-4 min-w-[44px]"
 						title="Limpiar búsqueda"
 					>
-						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path
 								stroke-linecap="round"
 								stroke-linejoin="round"
@@ -158,7 +158,7 @@
 								d="M6 18L18 6M6 6l12 12"
 							/>
 						</svg>
-						Limpiar
+						<span class="hidden sm:inline whitespace-nowrap">Limpiar</span>
 					</Button>
 				{/if}
 			</div>

@@ -1,44 +1,44 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { roleService } from '$lib/services/roles/roleService';
-	import type { Role } from '$lib/types/role';
+	import { companytypeService } from '$lib/services/companytypes/companytypeService';
+	import type { CompanyType } from '$lib/types/companytype';
 	import { confirmation } from '$lib/stores/confirmation';
 
-	let roleId = '';
-	let role: Role | null = null;
+	let companytypeId = '';
+	let companytype: CompanyType | null = null;
 	let loading = true;
 	let error = '';
 
-	async function loadRole() {
+	async function loadCompanyType() {
 		loading = true;
 		error = '';
 
 		try {
-			const response = await roleService.getById(roleId);
-			role = response.data;
+			const response = await companytypeService.getById(companytypeId);
+			companytype = response.data;
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Error al cargar el role';
+			error = err instanceof Error ? err.message : 'Error al cargar el companytype';
 		} finally {
 			loading = false;
 		}
 	}
 
-	async function deleteRole() {
-		if (!role) return;
+	async function deleteCompanyType() {
+		if (!companytype) return;
 
 		const confirmed = await confirmation.danger(
-			'¿Estás seguro de que quieres eliminar este role? Esta acción no se puede deshacer.',
-			'Eliminar Role'
+			'¿Estás seguro de que quieres eliminar este companytype? Esta acción no se puede deshacer.',
+			'Eliminar CompanyType'
 		);
 
 		if (!confirmed) return;
 
 		try {
-			await roleService.delete(role.id);
-			await goto('/roles');
+			await companytypeService.delete(companytype.id);
+			await goto('/companytypes');
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Error al eliminar role';
+			error = err instanceof Error ? err.message : 'Error al eliminar companytype';
 		}
 	}
 
@@ -79,19 +79,19 @@
 	}
 
 	function handleBack() {
-		goto('/roles');
+		goto('/companytypes');
 	}
 
 	$: {
-		roleId = $page.params.id || '';
-		if (roleId) {
-			loadRole();
+		companytypeId = $page.params.id || '';
+		if (companytypeId) {
+			loadCompanyType();
 		}
 	}
 </script>
 
 <svelte:head>
-	<title>Detalle de Role - CrediFacil</title>
+	<title>Detalle de Tipo de empresa - CrediFacil</title>
 </svelte:head>
 
 <div class="p-6 bg-page min-h-screen">
@@ -101,8 +101,8 @@
 				<button
 					on:click={handleBack}
 					class="text-tertiary hover:text-secondary"
-					title="Volver a roles"
-					aria-label="Volver a roles"
+					title="Volver a companytypes"
+					aria-label="Volver a companytypes"
 				>
 					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
@@ -115,16 +115,16 @@
 				</button>
 				<div>
 					<h1 class="text-2xl font-bold text-primary">
-						{role ? role.name : 'Detalle de Role'}
+						{companytype ? companytype.name : 'Detalle de Tipo de empresa'}
 					</h1>
-					<p class="text-secondary">Información completa del Role</p>
+					<p class="text-secondary">Información completa del Tipo de empresa</p>
 				</div>
 			</div>
 
-			{#if role}
+			{#if companytype}
 				<div class="flex space-x-3">
 					<button
-						on:click={() => goto(`/roles/${role.id}/edit`)}
+						on:click={() => goto(`/companytypes/${companytype.id}/edit`)}
 						class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
 					>
 						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -138,7 +138,7 @@
 						Editar
 					</button>
 					<button
-						on:click={deleteRole}
+						on:click={deleteCompanyType}
 						class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
 					>
 						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -159,13 +159,13 @@
 	{#if loading}
 		<div class="text-center py-8">
 			<div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-			<p class="mt-2 text-secondary">Cargando Role...</p>
+			<p class="mt-2 text-secondary">Cargando Tipo de empresa...</p>
 		</div>
 	{:else if error}
 		<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
 			{error}
 		</div>
-	{:else if role}
+	{:else if companytype}
 		<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 			<!-- Información Principal -->
 			<div class="lg:col-span-2">
@@ -174,13 +174,13 @@
 						<div class="flex items-center space-x-4 mb-6">
 							<div class="flex-shrink-0">
 								<div class="h-16 w-16 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl font-bold">
-									{role.name.charAt(0).toUpperCase()}
+									{companytype.name.charAt(0).toUpperCase()}
 								</div>
 							</div>
 							<div>
-								<h2 class="text-xl font-bold text-primary">{role.name}</h2>
-								{#if role.description}
-									<p class="text-secondary">{role.description}</p>
+								<h2 class="text-xl font-bold text-primary">{companytype.name}</h2>
+								{#if companytype.description}
+									<p class="text-secondary">{companytype.description}</p>
 								{/if}
 							</div>
 						</div>
@@ -193,18 +193,51 @@
 										<svg class="w-5 h-5 text-tertiary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
 										</svg>
-										<span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full {getStatusBadgeClass(role.status)}">{getStatusText(role.status)}</span>
+										<span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full {getStatusBadgeClass(companytype.status)}">{getStatusText(companytype.status)}</span>
 									</div>
 								</div>
 							</div>
 							<div>
-								<h3 class="text-sm font-medium text-tertiary uppercase tracking-wide mb-2">Es sistema</h3>
+								<h3 class="text-sm font-medium text-tertiary uppercase tracking-wide mb-2">Código</h3>
 								<div class="space-y-3">
 									<div class="flex items-center">
 										<svg class="w-5 h-5 text-tertiary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
 										</svg>
-										<span class="text-primary">{role.is_system ? 'Sí' : 'No'}</span>
+										<span class="text-primary">{companytype.code || '-'}</span>
+									</div>
+								</div>
+							</div>
+							<div>
+								<h3 class="text-sm font-medium text-tertiary uppercase tracking-wide mb-2">Categoría</h3>
+								<div class="space-y-3">
+									<div class="flex items-center">
+										<svg class="w-5 h-5 text-tertiary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+										</svg>
+										<span class="text-primary">{companytype.category || '-'}</span>
+									</div>
+								</div>
+							</div>
+							<div>
+								<h3 class="text-sm font-medium text-tertiary uppercase tracking-wide mb-2">Creado por ID</h3>
+								<div class="space-y-3">
+									<div class="flex items-center">
+										<svg class="w-5 h-5 text-tertiary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+										</svg>
+										<span class="text-primary">{companytype.createdbyid || '-'}</span>
+									</div>
+								</div>
+							</div>
+							<div>
+								<h3 class="text-sm font-medium text-tertiary uppercase tracking-wide mb-2">Actualizado por ID</h3>
+								<div class="space-y-3">
+									<div class="flex items-center">
+										<svg class="w-5 h-5 text-tertiary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+										</svg>
+										<span class="text-primary">{companytype.updatedbyid || '-'}</span>
 									</div>
 								</div>
 							</div>
@@ -221,88 +254,27 @@
 						<h3 class="text-lg font-medium text-primary mb-4">Información del Sistema</h3>
 						<div class="space-y-4">
 							<div>
-								<dt class="text-sm font-medium text-tertiary">ID del Role</dt>
+								<dt class="text-sm font-medium text-tertiary">ID del Tipo de empresa</dt>
 								<dd class="mt-1 text-sm text-primary font-mono bg-muted px-2 py-1 rounded">
-									{role.id}
+									{companytype.id}
 								</dd>
 							</div>
 							<div>
 								<dt class="text-sm font-medium text-tertiary">Fecha de Creación</dt>
 								<dd class="mt-1 text-sm text-primary">
-									{formatDate(role.created_at)}
+									{formatDate(companytype.created_at)}
 								</dd>
 							</div>
 							<div>
 								<dt class="text-sm font-medium text-tertiary">Última Actualización</dt>
 								<dd class="mt-1 text-sm text-primary">
-									{formatDate(role.updated_at)}
+									{formatDate(companytype.updated_at)}
 								</dd>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="bg-surface shadow-sm rounded-lg border border-border">
-					<div class="p-6">
-						<h3 class="text-lg font-medium text-primary mb-4">Usuarios ({role.users ? role.users.length : 0})</h3>
-						<div class="space-y-3">
-							{#if role.users && role.users.length > 0}
-								<div class="space-y-2">
-									{#each role.users as user}
-										<div class="flex items-center justify-between p-3 bg-muted rounded-lg">
-											<div class="flex items-center space-x-3">
-												<div class="h-8 w-8 rounded-full bg-primary-500 flex items-center justify-center text-inverse text-sm font-bold">
-													{user.name.charAt(0).toUpperCase()}
-												</div>
-												<div>
-													<p class="text-sm font-medium text-primary">{user.name}</p>
-													<p class="text-xs text-secondary">@{user.username}</p>
-												</div>
-											</div>
-											<span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {getStatusBadgeClass(user.status)}">
-												{getStatusText(user.status)}
-											</span>
-										</div>
-									{/each}
-								</div>
-							{:else}
-								<div class="text-sm text-secondary text-center py-4">
-									No hay usuarios asociados a este role
-								</div>
-							{/if}
-						</div>
-					</div>
-				</div>
-				<div class="bg-surface shadow-sm rounded-lg border border-border">
-					<div class="p-6">
-						<h3 class="text-lg font-medium text-primary mb-4">Permisos de rol ({role.role_permissions ? role.role_permissions.length : 0})</h3>
-						<div class="space-y-3">
-							{#if role.role_permissions && role.role_permissions.length > 0}
-								<div class="space-y-2">
-									{#each role.role_permissions as relationItem}
-										<div class="p-3 bg-muted rounded-lg">
-											<div class="flex items-center justify-between">
-												<div>
-													<p class="text-sm font-medium text-primary">{relationItem.permission?.name || relationItem.name}</p>
-													{#if relationItem.permission?.description || relationItem.description}
-														<p class="text-xs text-secondary">{relationItem.permission?.description || relationItem.description}</p>
-													{/if}
-												</div>
-												<div class="text-right">
-													<p class="text-xs font-mono text-tertiary">{relationItem.permission?.module || relationItem.module}:{relationItem.permission?.action || relationItem.action}</p>
-												</div>
-											</div>
-										</div>
-									{/each}
-								</div>
-							{:else}
-								<div class="text-sm text-secondary text-center py-4">
-									No hay permisos asociados a este role
-								</div>
-							{/if}
-						</div>
-					</div>
-				</div>
 				
 
 
@@ -323,14 +295,14 @@
 					d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
 				></path>
 			</svg>
-			<h3 class="mt-2 text-sm font-medium text-primary">Role no encontrado</h3>
-			<p class="mt-1 text-sm text-tertiary">El role que buscas no existe o ha sido eliminado.</p>
+			<h3 class="mt-2 text-sm font-medium text-primary">CompanyType no encontrado</h3>
+			<p class="mt-1 text-sm text-tertiary">El companytype que buscas no existe o ha sido eliminado.</p>
 			<div class="mt-6">
 				<button
 					on:click={handleBack}
 					class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
 				>
-					Volver a Roles
+					Volver a CompanyTypes
 				</button>
 			</div>
 		</div>

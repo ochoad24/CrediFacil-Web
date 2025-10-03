@@ -135,7 +135,13 @@
 			href: '/roles',
 			icon: Layers,
 			label: 'Roles'
-		}
+		},
+		{
+			key: 'companytypes',
+			href: '/companytypes',
+			icon: Layers,
+			label: 'Tipo de empresas'
+		},
 ];
 
 	// Reactive statements

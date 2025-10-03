@@ -127,7 +127,7 @@
 </script>
 
 <svelte:head>
-  <title>Editar Rol - CrediFacil</title>
+  <title>Editar Role - CrediFacil</title>
 </svelte:head>
 
 <div class="p-6 bg-page min-h-screen">
@@ -151,7 +151,7 @@
           </svg>
         </button>
         <div>
-          <h1 class="text-2xl font-bold text-primary">Editar Rol</h1>
+          <h1 class="text-2xl font-bold text-primary">Editar Role</h1>
           <p class="text-secondary">Actualizar la información</p>
         </div>
       </div>

@@ -1,0 +1,51 @@
+# Git
+.git
+.gitignore
+
+# Dependencies
+node_modules
+
+# Build output
+build
+.svelte-kit
+dist
+
+# Environment files (should be passed at runtime)
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Documentation
+*.md
+!README.md
+ARCHITECTURE.md
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+coverage
+.nyc_output
+
+# Prettier and ESLint
+.prettierrc
+.prettierignore
+.eslintrc
+eslint.config.js
+.stylelintrc.json

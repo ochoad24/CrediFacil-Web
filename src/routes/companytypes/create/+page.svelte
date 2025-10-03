@@ -1,19 +1,21 @@
-<!-- Auto-generated Create Page for Role -->
+<!-- Auto-generated Create Page for CompanyType -->
 <script lang="ts">
   import { goto } from '$app/navigation';
   import Button from '$lib/components/ui/Button.svelte';
   import Input from '$lib/components/ui/Input.svelte';
   import Select from '$lib/components/ui/Select.svelte';
   import Textarea from '$lib/components/ui/Textarea.svelte';
-  import { roleService } from '$lib/services/roles/roleService';
-  import type { CreateRoleRequest } from '$lib/types/role';
+  import { companytypeService } from '$lib/services/companytypes/companytypeService';
+  import type { CreateCompanyTypeRequest } from '$lib/types/companytype';
   import { loadingStore } from '$lib/stores/loading';
   import { toast } from '$lib/utils/toast';
 
   // Form data
-  let form: CreateRoleRequest = {
+  let form: CreateCompanyTypeRequest = {
     name: '',
-    description: undefined,
+    description: '',
+    code: '',
+    category: '',
   };
 
   // Component state
@@ -22,6 +24,7 @@
   let success = false;
 
   // Related data
+  let userOptions: User[] = [];
 
   // Validation function
   function validateForm(): boolean {
@@ -29,14 +32,26 @@
     // Nombre - Required validation
     if (!form.name?.trim()) {
       validationErrors.name = 'Nombre es requerido';
-    } else if (form.name.trim().length < 2) {
-      validationErrors.name = 'Nombre debe tener al menos 2 caracteres';
+    } else if (form.name.trim().length < 3) {
+      validationErrors.name = 'Nombre debe tener al menos 3 caracteres';
     } else if (form.name.trim().length > 255) {
       validationErrors.name = 'Nombre debe tener máximo 255 caracteres';
     }
     // Descripción - Optional field validation
     if (form.description?.trim() && form.description.trim().length > 500) {
       validationErrors.description = 'Descripción debe tener máximo 500 caracteres';
+    }
+    // Código - Required validation
+    if (!form.code?.trim()) {
+      validationErrors.code = 'Código es requerido';
+    } else if (form.code.trim().length < 2) {
+      validationErrors.code = 'Código debe tener al menos 2 caracteres';
+    } else if (form.code.trim().length > 255) {
+      validationErrors.code = 'Código debe tener máximo 255 caracteres';
+    }
+    // Categoría - Optional field validation
+    if (form.category?.trim() && form.category.trim().length > 255) {
+      validationErrors.category = 'Categoría debe tener máximo 255 caracteres';
     }
 
     return Object.keys(validationErrors).length === 0;
@@ -52,6 +67,11 @@
 
   // Load related data
   async function loadRelatedData() {
+    try {
+      userOptions = await companytypeService.getUserOptions();
+    } catch (err) {
+      console.error('Error loading user options:', err);
+    }
   }
 
   // Handle form submission
@@ -63,16 +83,16 @@
     }
 
     loading = true;
-    loadingStore.show('Creando Role...');
+    loadingStore.show('Creando CompanyType...');
     validationErrors = {};
 
     try {
-      await roleService.create(form);
+      await companytypeService.create(form);
       success = true;
-      toast.success('Role creado exitosamente');
-      goto('/roles');
+      toast.success('CompanyType creado exitosamente');
+      goto('/companytypes');
     } catch (err: any) {
-      console.error('Error creating role:', err);
+      console.error('Error creating companytype:', err);
 
       // Handle validation errors from server
       if (err.response?.data?.errors) {
@@ -80,16 +100,16 @@
         toast.error('Por favor, corrige los errores del formulario');
       } else {
         // Parse error message
-        let errorMessage = err.response?.data?.message || err.response?.data?.error || err.message || 'Error al crear role';
+        let errorMessage = err.response?.data?.message || err.response?.data?.error || err.message || 'Error al crear companytype';
 
         // Handle database constraint errors
         if (errorMessage.includes('duplicate key') || errorMessage.includes('SQLSTATE 23505')) {
           // Extract field name from unique constraint error
-          if (errorMessage.includes('idx_roles_name') || errorMessage.includes('name')) {
-            errorMessage = 'Ya existe un role con ese nombre';
-          } else if (errorMessage.includes('idx_roles_')) {
+          if (errorMessage.includes('idx_companytypes_name') || errorMessage.includes('name')) {
+            errorMessage = 'Ya existe un companytype con ese nombre';
+          } else if (errorMessage.includes('idx_companytypes_')) {
             // Generic duplicate error
-            errorMessage = 'Ya existe un role con esos datos';
+            errorMessage = 'Ya existe un companytype con esos datos';
           } else {
             errorMessage = 'Este registro ya existe en el sistema';
           }
@@ -114,7 +134,7 @@
 </script>
 
 <svelte:head>
-  <title>Crear Role - CrediFacil</title>
+  <title>Crear Tipo de empresa - CrediFacil</title>
 </svelte:head>
 
 <div class="p-6 bg-page min-h-screen">
@@ -123,7 +143,7 @@
       <div class="flex items-center space-x-4">
         <button
           type="button"
-          on:click={() => goto('/roles')}
+          on:click={() => goto('/companytypes')}
           class="text-secondary hover:text-primary"
           title="Volver"
           aria-label="Volver"
@@ -138,7 +158,7 @@
           </svg>
         </button>
         <div>
-          <h1 class="text-2xl font-bold text-primary">Crear Role</h1>
+          <h1 class="text-2xl font-bold text-primary">Crear Tipo de empresa</h1>
           <p class="text-secondary">Agregar nueva información</p>
         </div>
       </div>
@@ -175,14 +195,42 @@
           on:input={() => clearFieldError('description')}
         />
       </div>
+      <div>
+        <Input
+          id="code"
+          type="text"
+          bind:value={form.code}
+          label="Código *"
+          placeholder="Ingresa código"
+          required={ true }
+          
+          tabindex={ 3 }
+          error={validationErrors.code}
+          on:input={() => clearFieldError('code')}
+        />
+      </div>
+      <div>
+        <Input
+          id="category"
+          type="text"
+          bind:value={form.category}
+          label="Categoría"
+          placeholder="Ingresa categoría"
+          required={ false }
+          
+          tabindex={ 4 }
+          error={validationErrors.category}
+          on:input={() => clearFieldError('category')}
+        />
+      </div>
 
           <div class="flex justify-end space-x-4 pt-6 border-t border-border">
             <button
               type="button"
-              on:click={() => goto('/roles')}
+              on:click={() => goto('/companytypes')}
               disabled={loading}
               class="px-4 py-2 text-sm font-medium text-secondary bg-surface hover:bg-muted rounded-lg border border-border disabled:opacity-50 transition-colors"
-              tabindex={ 3 }
+              tabindex={ 5 }
             >
               Cancelar
             </button>
@@ -190,9 +238,9 @@
               type="submit"
               disabled={loading}
               class="px-4 py-2 text-sm font-medium text-inverse bg-primary-600 hover:bg-primary-700 rounded-lg disabled:opacity-50 transition-colors"
-              tabindex={ 4 }
+              tabindex={ 6 }
             >
-              {loading ? 'Creando...' : 'Crear Role'}
+              {loading ? 'Creando...' : 'Crear Tipo de empresa'}
             </button>
           </div>
         </form>

@@ -17,8 +17,9 @@ class ApiClient {
 	private isRefreshing = false;
 	private refreshPromise: Promise<void> | null = null;
 
-	constructor(baseUrl: string = '/api') {
-		this.baseUrl = baseUrl;
+	constructor(baseUrl?: string) {
+		// En producción usa VITE_API_URL, en desarrollo usa el proxy /api
+		this.baseUrl = baseUrl || import.meta.env.VITE_API_URL || '/api';
 	}
 
 	private async refreshToken(): Promise<void> {

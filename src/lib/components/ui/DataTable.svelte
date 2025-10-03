@@ -167,20 +167,21 @@
 
 	<!-- Table -->
 	<div class="overflow-x-auto">
-		<table class="w-full">
+		<table class="w-full min-w-max">
 			<thead class="bg-muted border-b border-border">
 				<tr>
 					{#if showRowNumbers}
 						<th
-							class="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider w-16"
+							class="px-2 sm:px-4 py-2 sm:py-4 text-left text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider w-12 sm:w-16"
 						>
-							No.
+							<span class="hidden sm:inline">No.</span>
+							<span class="sm:hidden">#</span>
 						</th>
 					{/if}
 					{#each columns as column}
 						<th
 							class={cn(
-								'px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider',
+								'px-3 sm:px-6 py-2 sm:py-4 text-left text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider',
 								column.sortable ? 'cursor-pointer hover:bg-muted/70 select-none' : '',
 								column.className || ''
 							)}
@@ -191,11 +192,11 @@
 								? (e) => (e.key === 'Enter' || e.key === ' ') && handleSort(column.key)
 								: undefined}
 						>
-							<div class="flex items-center space-x-2">
-								<span>{column.title}</span>
+							<div class="flex items-center space-x-1 sm:space-x-2">
+								<span class="truncate">{column.title}</span>
 								{#if column.sortable}
 									<svg
-										class={cn('w-4 h-4', getSortIconColor(column.key))}
+										class={cn('w-3 h-3 sm:w-4 sm:h-4 shrink-0', getSortIconColor(column.key))}
 										fill="none"
 										stroke="currentColor"
 										viewBox="0 0 24 24"
@@ -212,7 +213,7 @@
 						</th>
 					{/each}
 					<th
-						class="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
+						class="px-3 sm:px-6 py-2 sm:py-4 text-left text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider"
 					>
 						Acciones
 					</th>
@@ -223,11 +224,11 @@
 					<tr>
 						<td
 							colspan={(showRowNumbers ? 1 : 0) + columns.length + 1}
-							class="px-6 py-12 text-center"
+							class="px-3 sm:px-6 py-8 sm:py-12 text-center"
 						>
 							<div class="flex items-center justify-center">
-								<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-								<span class="ml-3 text-muted-foreground">Cargando...</span>
+								<div class="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-primary-600"></div>
+								<span class="ml-2 sm:ml-3 text-sm sm:text-base text-muted-foreground">Cargando...</span>
 							</div>
 						</td>
 					</tr>
@@ -235,7 +236,7 @@
 					<tr>
 						<td
 							colspan={(showRowNumbers ? 1 : 0) + columns.length + 1}
-							class="px-6 py-12 text-center text-muted-foreground"
+							class="px-3 sm:px-6 py-8 sm:py-12 text-center text-sm sm:text-base text-muted-foreground"
 						>
 							{emptyMessage}
 						</td>
@@ -247,25 +248,25 @@
 							: index + 1}
 						<tr class="hover:bg-muted/50 transition-colors">
 							{#if showRowNumbers}
-								<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-primary">
+								<td class="px-2 sm:px-4 py-2 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-text-primary">
 									{rowNumber}
 								</td>
 							{/if}
 							{#each columns as column}
 								<td
 									class={cn(
-										'px-6 py-4 whitespace-nowrap text-text-primary',
+										'px-3 sm:px-6 py-2 sm:py-4 text-xs sm:text-sm text-text-primary',
 										column.className || ''
 									)}
 								>
 									{#if column.render}
 										{@html column.render(item[column.key], item)}
 									{:else}
-										<span class="text-text-primary">{item[column.key]}</span>
+										<span class="text-text-primary truncate block max-w-[200px] sm:max-w-none">{item[column.key]}</span>
 									{/if}
 								</td>
 							{/each}
-							<td class="px-6 py-4 whitespace-nowrap">
+							<td class="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
 								<slot name="actions" {item} {index} />
 							</td>
 						</tr>
@@ -277,23 +278,23 @@
 
 	<!-- Pagination -->
 	{#if pagination}
-		<div class="space-y-4 mt-6 px-6 pb-6">
+		<div class="space-y-3 sm:space-y-4 mt-4 sm:mt-6 px-3 sm:px-6 pb-4 sm:pb-6">
 			<!-- Information row -->
-			<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-				<div class="text-sm text-text-secondary order-2 sm:order-1">
+			<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+				<div class="text-xs sm:text-sm text-text-secondary order-2 sm:order-1 text-center sm:text-left">
 					Mostrando {(pagination.page - 1) * pagination.limit + 1} a {Math.min(
 						pagination.page * pagination.limit,
 						pagination.total
-					)} de {pagination.total} resultados
+					)} de {pagination.total}
 				</div>
 
 				<!-- Records per page selector -->
-				<div class="flex items-center gap-2 order-1 sm:order-2">
-					<span class="text-sm text-text-secondary">Mostrar</span>
+				<div class="flex items-center justify-center sm:justify-start gap-2 order-1 sm:order-2">
+					<span class="text-xs sm:text-sm text-text-secondary">Mostrar</span>
 					<select
 						value={pagination.limit}
 						on:change={handleLimitChange}
-						class="px-2 py-1 text-sm border border-border rounded bg-surface text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+						class="px-2 py-1 text-xs sm:text-sm border border-border rounded bg-surface text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent min-w-[60px]"
 					>
 						{#each limitOptions as option}
 							<option value={option}>
@@ -301,22 +302,22 @@
 							</option>
 						{/each}
 					</select>
-					<span class="text-sm text-text-secondary">por página</span>
+					<span class="text-xs sm:text-sm text-text-secondary hidden sm:inline">por página</span>
 				</div>
 			</div>
 
 			<!-- Pagination controls -->
 			<div class="flex items-center justify-center">
 				<!-- Mobile pagination - simplified -->
-				<div class="flex sm:hidden items-center justify-between w-full max-w-xs">
+				<div class="flex sm:hidden items-center justify-between w-full max-w-xs gap-2">
 					<Button
 						variant="outline"
 						size="sm"
 						on:click={() => handlePageChange(pagination.page - 1)}
 						disabled={pagination.page <= 1}
-						className="flex items-center"
+						className="flex items-center justify-center min-w-[40px] px-2"
 					>
-						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path
 								stroke-linecap="round"
 								stroke-linejoin="round"
@@ -327,7 +328,7 @@
 					</Button>
 
 					<div class="flex items-center space-x-2">
-						<span class="text-sm text-text-secondary">
+						<span class="text-xs font-medium text-text-secondary whitespace-nowrap">
 							{pagination.page} / {pagination.totalPages}
 						</span>
 					</div>
@@ -337,9 +338,9 @@
 						size="sm"
 						on:click={() => handlePageChange(pagination.page + 1)}
 						disabled={pagination.page >= pagination.totalPages}
-						className="flex items-center"
+						className="flex items-center justify-center min-w-[40px] px-2"
 					>
-						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path
 								stroke-linecap="round"
 								stroke-linejoin="round"

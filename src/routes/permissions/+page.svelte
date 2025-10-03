@@ -35,9 +35,7 @@
       key: 'id',
       label: ' ID',
       sortable: true,
-      render: (value: string) => ``
-        <code class="text-xs bg-gray-100 px-1 rounded">${value.slice(0, 8)}...</code>
-      ``
+      render: (value: string) => `<code class="text-xs bg-gray-100 px-1 rounded">${value.slice(0, 8)}...</code>`
     },
     {
       key: 'name',
@@ -86,36 +84,6 @@
       label: 'Deleted At',
       sortable: false,
       render: (value: any) => value || '-'
-    },
-    {
-      key: 'actions',
-      label: 'Acciones',
-      sortable: false,
-      render: (_, row: Permission) => ``
-        <div class="flex space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => goto(`/permissions/${row.id}`)}
-          >
-            Ver
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => goto(`/permissions/${row.id}/edit`)}
-          >
-            Editar
-          </Button>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => handleDelete(row.id)}
-          >
-            Eliminar
-          </Button>
-        </div>
-      ``
     }
   ];
 
@@ -222,5 +190,31 @@
     onSearch={handleSearch}
     onSort={handleSort}
     onPageChange={handlePageChange}
-  />
+  >
+    <svelte:fragment slot="actions" let:item>
+      <div class="flex space-x-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onclick={() => goto(`/permissions/${item.id}`)}
+        >
+          Ver
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onclick={() => goto(`/permissions/${item.id}/edit`)}
+        >
+          Editar
+        </Button>
+        <Button
+          variant="destructive"
+          size="sm"
+          onclick={() => handleDelete(item.id)}
+        >
+          Eliminar
+        </Button>
+      </div>
+    </svelte:fragment>
+  </DataTable>
 </div>

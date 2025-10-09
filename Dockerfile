@@ -15,7 +15,13 @@ COPY . .
 
 # Build arguments for environment variables
 ARG VITE_API_URL
+ARG PUBLIC_NAME_COMPANY
+ARG VITE_RECAPTCHA_SITE_KEY
+
+# Set environment variables for build
 ENV VITE_API_URL=$VITE_API_URL
+ENV PUBLIC_NAME_COMPANY=$PUBLIC_NAME_COMPANY
+ENV VITE_RECAPTCHA_SITE_KEY=$VITE_RECAPTCHA_SITE_KEY
 
 # Build the application
 RUN npm run build

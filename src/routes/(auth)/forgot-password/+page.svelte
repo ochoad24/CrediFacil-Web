@@ -5,6 +5,7 @@
 	import { goto } from '$app/navigation';
 	import { redirectIfAuthenticated } from '$lib/utils/auth-guard';
 	import { toast } from '$lib/utils/toast';
+	import { authService } from '$lib/services/auth/authService';
 
 	let form = {
 		email_or_username: ''
@@ -46,27 +47,20 @@
 		isLoading = true;
 
 		try {
-			const response = await fetch('/api/v1/auth/forgot-password', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ email_or_username: form.email_or_username })
-			});
-
-			const data = await response.json();
-
-			if (response.ok) {
-				emailSent = true;
-				toast.success('Email enviado. Revisa tu bandeja de entrada.');
-			} else {
-				toast.error(data.error || 'Error al procesar la solicitud');
-				errors.email_or_username = data.error || 'Error al procesar la solicitud';
-			}
+			await authService.forgotPassword(form.email_or_username);
+			emailSent = true;
+			toast.success('Email enviado. Revisa tu bandeja de entrada.');
 		} catch (error) {
 			console.error('Forgot password failed:', error);
-			toast.error('Error de conexión. No se pudo establecer comunicación con el servidor.');
-			errors.email_or_username = 'Error de conexión. Intenta nuevamente.';
+
+			let errorMessage = 'Error de conexión. Intenta nuevamente.';
+
+			if (error && typeof error === 'object' && 'message' in error) {
+				errorMessage = error.message as string;
+			}
+
+			toast.error(errorMessage);
+			errors.email_or_username = errorMessage;
 		} finally {
 			isLoading = false;
 		}

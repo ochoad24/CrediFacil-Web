@@ -51,12 +51,12 @@ class AuthService {
 		return response.data;
 	}
 
-	async forgotPassword(email: string): Promise<void> {
-		await apiClient.post('/v1/auth/forgot-password', { email });
+	async forgotPassword(emailOrUsername: string): Promise<void> {
+		await apiClient.post('/v1/auth/forgot-password', { email_or_username: emailOrUsername });
 	}
 
 	async resetPassword(token: string, password: string): Promise<void> {
-		await apiClient.post('/v1/auth/reset-password', { token, password });
+		await apiClient.post('/v1/auth/reset-password', { token, new_password: password });
 	}
 
 	async changePassword(currentPassword: string, newPassword: string): Promise<void> {

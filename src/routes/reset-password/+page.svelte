@@ -6,6 +6,7 @@
 	import { page } from '$app/stores';
 	import { redirectIfAuthenticated } from '$lib/utils/auth-guard';
 	import { toast } from '$lib/utils/toast';
+	import { authService } from '$lib/services/auth/authService';
 
 	let form = {
 		password: '',
@@ -94,31 +95,21 @@
 		isLoading = true;
 
 		try {
-			const response = await fetch('/api/v1/auth/reset-password', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					token: token,
-					new_password: form.password
-				})
-			});
-
-			const data = await response.json();
-
-			if (response.ok) {
-				resetSuccessful = true;
-				toast.success('Contraseña actualizada exitosamente');
-				setTimeout(() => goto('/login'), 3000);
-			} else {
-				toast.error(data.error || 'Error al restablecer la contraseña');
-				errors.password = data.error || 'Error al restablecer la contraseña';
-			}
+			await authService.resetPassword(token, form.password);
+			resetSuccessful = true;
+			toast.success('Contraseña actualizada exitosamente');
+			setTimeout(() => goto('/login'), 3000);
 		} catch (error) {
 			console.error('Reset password failed:', error);
-			toast.error('Error de conexión. No se pudo establecer comunicación con el servidor.');
-			errors.password = 'Error de conexión. Intenta nuevamente.';
+
+			let errorMessage = 'Error de conexión. Intenta nuevamente.';
+
+			if (error && typeof error === 'object' && 'message' in error) {
+				errorMessage = error.message as string;
+			}
+
+			toast.error(errorMessage);
+			errors.password = errorMessage;
 		} finally {
 			isLoading = false;
 		}

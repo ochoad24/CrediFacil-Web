@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { PUBLIC_NAME_COMPANY } from '$env/static/public';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { fly } from 'svelte/transition';
@@ -279,7 +280,7 @@
 					<span class="text-xl font-bold text-white">C</span>
 				</div>
 				<div>
-					<h2 class="text-lg font-bold text-foreground">CrediFacil</h2>
+					<h2 class="text-lg font-bold text-foreground">{PUBLIC_NAME_COMPANY}</h2>
 					<p class="text-xs text-muted-foreground">Financial Platform</p>
 				</div>
 			</div>
@@ -431,7 +432,7 @@
 				in:fly={{ opacity: 0, duration: 200 }}
 				out:fly={{ opacity: 0, duration: 150 }}
 			>
-				CrediFacil v1.0.0
+				{PUBLIC_NAME_COMPANY} v1.0.0
 			</div>
 		{/if}
 	</div>

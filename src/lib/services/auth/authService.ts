@@ -4,6 +4,7 @@ import type { User } from '$lib/types/user';
 interface LoginCredentials {
 	username: string;
 	password: string;
+	recaptcha_token?: string;
 }
 
 interface LoginResponse {

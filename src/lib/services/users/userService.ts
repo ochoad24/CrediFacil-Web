@@ -92,6 +92,11 @@ class UserService {
 		const response = await apiClient.delete<{ message: string }>(`${this.baseUrl}/${id}`);
 		return response as unknown as { message: string };
 	}
+
+	async unlockUser(id: string): Promise<{ message: string }> {
+		const response = await apiClient.post<{ message: string }>(`${this.baseUrl}/${id}/unlock`, {});
+		return response as unknown as { message: string };
+	}
 }
 
 export const userService = new UserService();

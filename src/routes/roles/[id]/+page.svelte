@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { PUBLIC_NAME_COMPANY } from '$env/static/public';
 	import { goto } from '$app/navigation';
 	import { roleService } from '$lib/services/roles/roleService';
 	import type { Role } from '$lib/types/role';
@@ -91,7 +92,7 @@
 </script>
 
 <svelte:head>
-	<title>Detalle de Role - CrediFacil</title>
+	<title>Detalle de Role - {PUBLIC_NAME_COMPANY}</title>
 </svelte:head>
 
 <div class="p-6 bg-page min-h-screen">

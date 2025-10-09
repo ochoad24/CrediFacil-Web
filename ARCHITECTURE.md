@@ -1,6 +1,6 @@
-# CrediFacil - Arquitectura del Frontend
+# BigBank - Arquitectura del Frontend
 
-Este documento describe la arquitectura y organización del proyecto frontend de CrediFacil, diseñado para ser escalable y facilitar el trabajo de múltiples desarrolladores.
+Este documento describe la arquitectura y organización del proyecto frontend de BigBank, diseñado para ser escalable y facilitar el trabajo de múltiples desarrolladores.
 
 ## 📁 Estructura del Proyecto
 

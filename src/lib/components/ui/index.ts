@@ -1,4 +1,4 @@
-// UI Component exports for CrediFacil Design System
+// UI Component exports for BigBank Design System
 export { default as Badge } from './Badge.svelte';
 export { default as Button } from './Button.svelte';
 export { default as Card } from './Card.svelte';

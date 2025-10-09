@@ -1,6 +1,7 @@
 <!-- Auto-generated List Page for CompanyType -->
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { PUBLIC_NAME_COMPANY } from '$env/static/public';
 	import { goto } from '$app/navigation';
 	import { companytypeService } from '$lib/services/companytypes/companytypeService';
 	import type { CompanyType, CompanyTypeSearchParams } from '$lib/types/companytype';
@@ -214,7 +215,7 @@
 </script>
 
 <svelte:head>
-  <title>Tipo de empresas - CrediFacil</title>
+  <title>Tipo de empresas - {PUBLIC_NAME_COMPANY}</title>
 </svelte:head>
 
 <div class="p-6">

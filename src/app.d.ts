@@ -8,6 +8,14 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+
+	// Google reCAPTCHA v3 type definitions
+	interface Window {
+		grecaptcha: {
+			execute: (siteKey: string, options: { action: string }) => Promise<string>;
+			ready: (callback: () => void) => void;
+		};
+	}
 }
 
 export {};

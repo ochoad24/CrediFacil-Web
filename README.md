@@ -1,6 +1,6 @@
 # Web Kredix
 
-Frontend de CrediFacil construido con SvelteKit y TypeScript.
+Frontend de BigBank construido con SvelteKit y TypeScript.
 
 ## Características
 

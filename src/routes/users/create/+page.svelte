@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { PUBLIC_NAME_COMPANY } from '$env/static/public';
 	import { userService, type CreateUserRequest } from '$lib/services/users/userService';
 	import { roleService } from '$lib/services/roles/roleService';
 	import {
@@ -181,7 +182,7 @@
 </script>
 
 <svelte:head>
-	<title>Crear Usuario - CrediFacil</title>
+	<title>Crear Usuario - {PUBLIC_NAME_COMPANY}</title>
 </svelte:head>
 
 <div class="p-6 bg-page min-h-screen">

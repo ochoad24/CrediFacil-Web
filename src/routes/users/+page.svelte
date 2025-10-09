@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { PUBLIC_NAME_COMPANY } from '$env/static/public';
 	import { goto } from '$app/navigation';
 	import { userService, type User, type UsersResponse } from '$lib/services/users/userService';
 	import DataTable from '$lib/components/ui/DataTable.svelte';
@@ -124,6 +125,22 @@
 		}
 	}
 
+	async function unlockUser(id: string, name: string) {
+		const confirmed = await confirmation.warning(
+			`¿Estás seguro de que quieres desbloquear al usuario "${name}"?`,
+			'Desbloquear Usuario'
+		);
+
+		if (!confirmed) return;
+
+		try {
+			await userService.unlockUser(id);
+			await loadUsers(pagination.page, pagination.limit, searchTerm, sortKey, sortDirection);
+		} catch (err) {
+			error = err instanceof Error ? err.message : 'Error al desbloquear usuario';
+		}
+	}
+
 	function formatDate(dateString: string): string {
 		return new Date(dateString).toLocaleDateString('es-ES', {
 			year: 'numeric',
@@ -140,6 +157,8 @@
 				return 'badge-status-inactive';
 			case 'SUSPENDED':
 				return 'badge-status-suspended';
+			case 'BLOCKED':
+				return 'bg-error-100 text-error-800';
 			default:
 				return 'badge-status-default';
 		}
@@ -153,6 +172,8 @@
 				return 'Inactivo';
 			case 'SUSPENDED':
 				return 'Suspendido';
+			case 'BLOCKED':
+				return 'Bloqueado';
 			default:
 				return status;
 		}
@@ -183,7 +204,7 @@
 </script>
 
 <svelte:head>
-	<title>Usuarios - CrediFacil</title>
+	<title>Usuarios - {PUBLIC_NAME_COMPANY}</title>
 </svelte:head>
 
 <div class="p-6">
@@ -270,6 +291,23 @@
 						></path>
 					</svg>
 				</button>
+				{#if (item as unknown as User).status.toUpperCase() === 'BLOCKED'}
+					<button
+						on:click={() => unlockUser((item as unknown as User).id, (item as unknown as User).name)}
+						class="btn-icon btn-icon-warning"
+						title="Desbloquear"
+						aria-label="Desbloquear usuario"
+					>
+						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"
+							></path>
+						</svg>
+					</button>
+				{/if}
 				<button
 					on:click={() => deleteUser((item as unknown as User).id, (item as unknown as User).name)}
 					class="btn-icon btn-icon-danger"

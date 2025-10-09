@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { PUBLIC_NAME_COMPANY } from '$env/static/public';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { userService, type User } from '$lib/services/users/userService';
@@ -91,7 +92,7 @@
 </script>
 
 <svelte:head>
-	<title>{user ? `${user.name} - Usuario` : 'Detalle de Usuario'} - CrediFacil</title>
+	<title>{user ? `${user.name} - Usuario` : 'Detalle de Usuario'} - {PUBLIC_NAME_COMPANY}</title>
 </svelte:head>
 
 <div class="p-6 bg-page min-h-screen">

@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-/* Custom colors for CrediFacil */
+/* Custom colors for BigBank */
 /* stylelint-disable-next-line at-rule-no-unknown */
 @theme {
 	--color-primary-50: #f0f9ff;
@@ -160,6 +160,24 @@
 .btn-icon-neutral:hover {
 	background-color: var(--color-muted);
 	color: var(--color-text-primary);
+}
+
+.btn-icon-warning {
+	color: #d97706; /* amber-600 */
+}
+
+.btn-icon-warning:hover {
+	background-color: #fef3c7; /* amber-50 */
+	color: #b45309; /* amber-700 */
+}
+
+.dark .btn-icon-warning {
+	color: #fbbf24; /* amber-400 */
+}
+
+.dark .btn-icon-warning:hover {
+	background-color: rgba(251, 191, 36, 0.1); /* amber-400/10 */
+	color: #fcd34d; /* amber-300 */
 }
 
 /* Badge utility classes with theme support */

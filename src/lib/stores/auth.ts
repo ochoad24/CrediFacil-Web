@@ -27,7 +27,7 @@ function createAuthStore() {
 		subscribe,
 
 		// Actions
-		login: async (credentials: { username: string; password: string }) => {
+		login: async (credentials: { username: string; password: string; recaptcha_token?: string }) => {
 			update((state) => ({ ...state, isLoading: true }));
 
 			try {

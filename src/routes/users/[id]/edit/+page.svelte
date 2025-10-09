@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { PUBLIC_NAME_COMPANY } from '$env/static/public';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { userService, type UpdateUserRequest, type User } from '$lib/services/users/userService';
@@ -239,7 +240,7 @@
 </script>
 
 <svelte:head>
-	<title>Editar Usuario - CrediFacil</title>
+	<title>Editar Usuario - {PUBLIC_NAME_COMPANY}</title>
 </svelte:head>
 
 <div class="p-6 bg-page min-h-screen">

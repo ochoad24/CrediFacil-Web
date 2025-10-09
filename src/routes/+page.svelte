@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { PUBLIC_NAME_COMPANY } from '$env/static/public';
 	import { fly } from 'svelte/transition';
 	import { user } from '$lib/stores/auth';
 	import Card from '$lib/components/ui/Card.svelte';
@@ -81,7 +82,7 @@
 </script>
 
 <svelte:head>
-	<title>Inicio - CrediFacil</title>
+	<title>Inicio - {PUBLIC_NAME_COMPANY}</title>
 </svelte:head>
 
 <div class="space-y-4 sm:space-y-6 lg:space-y-8" in:fly={{ y: 20, duration: 500 }}>
@@ -129,7 +130,7 @@
 					<h2 class="text-lg sm:text-xl font-semibold">Bienvenido al Sistema</h2>
 				</div>
 				<p class="text-primary-50 leading-relaxed text-sm sm:text-base">
-					CrediFacil es tu plataforma integral para la gestión de créditos y servicios financieros.
+					{PUBLIC_NAME_COMPANY} es tu plataforma integral para la gestión de créditos y servicios financieros.
 					Aquí encontrarás todas las herramientas necesarias para administrar de manera eficiente
 					tus operaciones crediticias.
 				</p>

@@ -1,6 +1,7 @@
 <!-- Auto-generated List Page for Role -->
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { PUBLIC_NAME_COMPANY } from '$env/static/public';
 	import { goto } from '$app/navigation';
 	import { roleService } from '$lib/services/roles/roleService';
 	import type { Role, RoleSearchParams } from '$lib/types/role';
@@ -175,7 +176,7 @@
 </script>
 
 <svelte:head>
-  <title>Roles - CrediFacil</title>
+  <title>Roles - {PUBLIC_NAME_COMPANY}</title>
 </svelte:head>
 
 <div class="p-6">

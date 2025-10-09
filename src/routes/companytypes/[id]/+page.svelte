@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { PUBLIC_NAME_COMPANY } from '$env/static/public';
 	import { goto } from '$app/navigation';
 	import { companytypeService } from '$lib/services/companytypes/companytypeService';
 	import type { CompanyType } from '$lib/types/companytype';
@@ -91,7 +92,7 @@
 </script>
 
 <svelte:head>
-	<title>Detalle de Tipo de empresa - CrediFacil</title>
+	<title>Detalle de Tipo de empresa - {PUBLIC_NAME_COMPANY}</title>
 </svelte:head>
 
 <div class="p-6 bg-page min-h-screen">

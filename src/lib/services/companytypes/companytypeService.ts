@@ -2,6 +2,7 @@
 // Do not edit manually - use generate-crud-frontend command
 
 import { apiClient } from '../api/client';
+import type { User } from '$lib/types/user';
 import type {
   CompanyType,
   CreateCompanyTypeRequest,

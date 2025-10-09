@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { PUBLIC_NAME_COMPANY } from '$env/static/public';
 	import { Button, Input, Card, CardContent, ThemeToggle } from '$lib/components/ui';
 	import { goto } from '$app/navigation';
 	import { withLoading } from '$lib/utils/loading';
@@ -8,12 +9,12 @@
 	import { toast } from '$lib/utils/toast';
 
 	let form = {
-		username: '',
+		email_or_username: '',
 		password: ''
 	};
 
 	let errors = {
-		username: '',
+		email_or_username: '',
 		password: ''
 	};
 
@@ -27,22 +28,22 @@
 
 	// Validación simple
 	function validateForm(): boolean {
-		errors = { username: '', password: '' };
+		errors = { email_or_username: '', password: '' };
 		let isValid = true;
 
-		if (!form.username) {
-			errors.username = 'El usuario es requerido';
+		if (!form.email_or_username) {
+			errors.email_or_username = 'El email o usuario es requerido';
 			isValid = false;
-		} else if (form.username.length < 3) {
-			errors.username = 'El usuario debe tener al menos 3 caracteres';
+		} else if (form.email_or_username.length < 3) {
+			errors.email_or_username = 'Debe tener al menos 3 caracteres';
 			isValid = false;
 		}
 
 		if (!form.password) {
 			errors.password = 'La contraseña es requerida';
 			isValid = false;
-		} else if (form.password.length < 6) {
-			errors.password = 'La contraseña debe tener al menos 6 caracteres';
+		} else if (form.password.length < 8) {
+			errors.password = 'La contraseña debe tener al menos 8 caracteres';
 			isValid = false;
 		}
 
@@ -57,17 +58,32 @@
 		isLoading = true;
 
 		try {
+			// Ejecutar reCAPTCHA v3
+			let recaptchaToken = '';
+			if (typeof window !== 'undefined' && window.grecaptcha) {
+				try {
+					recaptchaToken = await window.grecaptcha.execute(
+						import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+						{ action: 'login' }
+					);
+				} catch (error) {
+					console.error('reCAPTCHA error:', error);
+					// Continuar sin reCAPTCHA si falla (el backend lo manejará como opcional)
+				}
+			}
+
 			await withLoading(
 				async () => {
 					const { authStore } = await import('$lib/stores/auth');
 
 					const response = await authStore.login({
-						username: form.username,
-						password: form.password
+						email_or_username: form.email_or_username,
+						password: form.password,
+						recaptcha_token: recaptchaToken
 					});
 
 					// Mostrar toast de bienvenida personalizado
-					const userName = response?.user?.name || form.username;
+					const userName = response?.user?.name || form.email_or_username;
 					toast.success(`¡Bienvenido de vuelta, ${userName}! Has iniciado sesión exitosamente.`);
 
 					// Redirigir a la URL solicitada o al dashboard
@@ -94,13 +110,13 @@
 				// Si es error de credenciales, mostrar en el campo de contraseña
 				if (errorMessage.toLowerCase().includes('credencial')) {
 					errors.password = errorMessage;
-					toast.error('Credenciales incorrectas. Por favor verifica tu usuario y contraseña.');
+					toast.error('Credenciales incorrectas. Por favor verifica tus datos.');
 				} else {
-					errors.username = errorMessage;
+					errors.email_or_username = errorMessage;
 					toast.error('Error al iniciar sesión. ' + errorMessage);
 				}
 			} else {
-				errors.username = errorMessage;
+				errors.email_or_username = errorMessage;
 				toast.error('Error de conexión. No se pudo establecer comunicación con el servidor.');
 			}
 		} finally {
@@ -114,7 +130,11 @@
 </script>
 
 <svelte:head>
-	<title>Iniciar Sesión - CrediFacil</title>
+	<title>Iniciar Sesión - {PUBLIC_NAME_COMPANY}</title>
+	<script
+		src="https://www.google.com/recaptcha/api.js?render={import.meta.env
+			.VITE_RECAPTCHA_SITE_KEY}"
+	></script>
 </svelte:head>
 
 <div
@@ -131,7 +151,7 @@
 			<div
 				class="mx-auto h-20 w-20 bg-gradient-to-br from-blue-600 via-cyan-600 to-blue-700 rounded-3xl flex items-center justify-center shadow-xl"
 			>
-				<span class="text-3xl font-bold text-white">C</span>
+				<span class="text-3xl font-bold text-white">BB</span>
 			</div>
 			<h1 class="mt-8 text-4xl font-bold text-foreground transition-colors">
 				Bienvenido de vuelta
@@ -147,13 +167,13 @@
 		>
 			<CardContent className="p-8 space-y-6">
 				<form on:submit={handleSubmit} class="space-y-6">
-					<!-- Username Field -->
+					<!-- Email or Username Field -->
 					<Input
-						bind:value={form.username}
+						bind:value={form.email_or_username}
 						type="text"
-						label="Usuario"
-						placeholder="Ingresa tu usuario"
-						error={errors.username}
+						label="Email o Usuario"
+						placeholder="Ingresa tu email o usuario"
+						error={errors.email_or_username}
 					/>
 
 					<!-- Password Field -->
@@ -221,6 +241,16 @@
 					>
 						{isLoading || $loadingStore.isVisible ? 'Iniciando sesión...' : 'Iniciar Sesión'}
 					</Button>
+
+					<!-- Forgot Password Link -->
+					<div class="text-center">
+						<a
+							href="/forgot-password"
+							class="text-sm text-primary hover:text-primary-600 transition-colors"
+						>
+							¿Olvidaste tu contraseña?
+						</a>
+					</div>
 				</form>
 			</CardContent>
 		</Card>

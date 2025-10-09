@@ -1,6 +1,7 @@
 <!-- Auto-generated Create Page for CompanyType -->
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { PUBLIC_NAME_COMPANY } from '$env/static/public';
   import Button from '$lib/components/ui/Button.svelte';
   import Input from '$lib/components/ui/Input.svelte';
   import Select from '$lib/components/ui/Select.svelte';
@@ -134,7 +135,7 @@
 </script>
 
 <svelte:head>
-  <title>Crear Tipo de empresa - CrediFacil</title>
+  <title>Crear Tipo de empresa - {PUBLIC_NAME_COMPANY}</title>
 </svelte:head>
 
 <div class="p-6 bg-page min-h-screen">

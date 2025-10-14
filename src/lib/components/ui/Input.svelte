@@ -11,6 +11,10 @@
 	export let disabled: boolean = false;
 	export let autofocus: boolean = false;
 	export let tabindex: number | undefined = undefined;
+	export let id: string = '';
+
+	// Generate unique ID if not provided
+	const uniqueId = id || `input-${Math.random().toString(36).substring(2, 11)}`;
 
 	// Prevenir hydration mismatch - solo mostrar error después de hidratación
 	$: showError = browser && error;
@@ -24,16 +28,17 @@
 
 <div class="w-full">
 	{#if label}
-		<label class="block text-sm font-medium text-foreground mb-2">
+		<label for={uniqueId} class="block text-sm font-medium text-foreground mb-2">
 			{label}
 		</label>
 	{/if}
 	<input
+		id={uniqueId}
 		bind:value
 		{type}
 		{placeholder}
 		{disabled}
-		{autofocus}
+		{...autofocus ? { autofocus: true } : {}}
 		tabindex={tabindex}
 		class={inputClasses}
 		on:input

@@ -51,7 +51,7 @@ export interface Role {
 
 export interface CreateRoleRequest {
   name: string;
-  description?: string | null;
+  description?: string | undefined;
   status?: string;
   is_system?: boolean;
 
@@ -59,7 +59,7 @@ export interface CreateRoleRequest {
 
 export interface UpdateRoleRequest {
   name?: string;
-  description?: string | null;
+  description?: string | undefined;
   status?: string;
   is_system?: boolean;
 

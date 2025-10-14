@@ -15,6 +15,13 @@ const initialState: CreditsState = {
 	error: null
 };
 
+// Helper function to safely get error message
+function getErrorMessage(error: unknown): string {
+	if (error instanceof Error) return error.message;
+	if (typeof error === 'string') return error;
+	return 'An unknown error occurred';
+}
+
 function createCreditsStore() {
 	const { subscribe, set, update } = writable<CreditsState>(initialState);
 
@@ -38,7 +45,7 @@ function createCreditsStore() {
 			} catch (error) {
 				update((state) => ({
 					...state,
-					error: error.message,
+					error: getErrorMessage(error),
 					isLoading: false
 				}));
 			}
@@ -67,7 +74,7 @@ function createCreditsStore() {
 			} catch (error) {
 				update((state) => ({
 					...state,
-					error: error.message,
+					error: getErrorMessage(error),
 					isLoading: false
 				}));
 				throw error;
@@ -98,7 +105,7 @@ function createCreditsStore() {
 			} catch (error) {
 				update((state) => ({
 					...state,
-					error: error.message,
+					error: getErrorMessage(error),
 					isLoading: false
 				}));
 				throw error;
@@ -123,5 +130,5 @@ export const activeCredits = derived(creditsStore, ($credits) =>
 );
 
 export const pendingCredits = derived(creditsStore, ($credits) =>
-	$credits.credits.filter((credit) => credit.status === 'pending')
+	$credits.credits.filter((credit) => credit.status === 'submitted')
 );

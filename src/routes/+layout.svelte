@@ -7,7 +7,7 @@
 	import ToastContainer from '$lib/components/ui/ToastContainer.svelte';
 	import GlobalConfirmDialog from '$lib/components/ui/GlobalConfirmDialog.svelte';
 	import Sidebar from '$lib/components/layout/Sidebar.svelte';
-	import { authStore, isAuthenticated } from '$lib/stores/auth';
+	import { authStore } from '$lib/stores/auth.svelte';
 	import { requireAuth, isPublicRoute } from '$lib/utils/auth-guard';
 	import { loadingStore } from '$lib/stores/loading';
 	import { themeStore } from '$lib/stores/cookies';
@@ -30,7 +30,7 @@
 	});
 
 	// Derived state to determine if sidebar should be shown
-	const shouldShowSidebar = $derived($isAuthenticated && !isPublicRoute($page.url.pathname));
+	const shouldShowSidebar = $derived(authStore.state.isAuthenticated && !isPublicRoute($page.url.pathname));
 
 	// Initialize authentication, theme, and route protection
 	onMount(async () => {

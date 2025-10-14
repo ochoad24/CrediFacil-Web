@@ -14,6 +14,7 @@ interface LoginResponse {
 		username: string;
 		name: string;
 	};
+	permissions: string[];
 }
 
 interface RegisterData {
@@ -68,6 +69,11 @@ class AuthService {
 
 	async verifyEmail(token: string): Promise<void> {
 		await apiClient.post('/v1/auth/verify-email', { token });
+	}
+
+	async getPermissions(): Promise<string[]> {
+		const response = await apiClient.get<{ permissions: string[] }>('/v1/auth/me/permissions');
+		return response.data.permissions;
 	}
 }
 

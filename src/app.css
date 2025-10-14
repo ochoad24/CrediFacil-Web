@@ -74,6 +74,10 @@
 	color: var(--color-text-tertiary);
 }
 
+.text-muted {
+	color: var(--color-muted-foreground);
+}
+
 .text-disabled {
 	color: var(--color-text-disabled);
 }
@@ -282,6 +286,14 @@
 /* Border utilities */
 .border-border {
 	border-color: var(--color-border);
+}
+
+.border-primary-600 {
+	border-color: var(--color-primary-600);
+}
+
+.dark .border-primary-600 {
+	border-color: var(--color-primary-400);
 }
 
 /* Warning color utilities */

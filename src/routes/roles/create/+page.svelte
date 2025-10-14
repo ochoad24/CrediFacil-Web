@@ -12,10 +12,10 @@
   import { toast } from '$lib/utils/toast';
 
   // Form data
-  let form: CreateRoleRequest = {
-    name: '',
-    description: undefined,
-  };
+  let form = {
+    name: '' as string,
+    description: '' as string,
+  } satisfies CreateRoleRequest as CreateRoleRequest;
 
   // Component state
   let loading = false;
@@ -115,17 +115,18 @@
 </script>
 
 <svelte:head>
-  <title>Crear Role - {PUBLIC_NAME_COMPANY}</title>
+  <title>Crear Rol - {PUBLIC_NAME_COMPANY}</title>
 </svelte:head>
 
-<div class="p-6 bg-page min-h-screen">
+<div class="p-4 sm:p-6 bg-page min-h-screen">
   <div class="max-w-2xl mx-auto">
     <div class="mb-6">
-      <div class="flex items-center space-x-4">
+      <!-- Header responsive con espacio para botón hamburger en móvil -->
+      <div class="flex items-center space-x-4 lg:pr-0 pr-16">
         <button
           type="button"
           on:click={() => goto('/roles')}
-          class="text-secondary hover:text-primary"
+          class="text-secondary hover:text-primary transition-colors flex-shrink-0"
           title="Volver"
           aria-label="Volver"
         >
@@ -138,9 +139,9 @@
             ></path>
           </svg>
         </button>
-        <div>
-          <h1 class="text-2xl font-bold text-primary">Crear Role</h1>
-          <p class="text-secondary">Agregar nueva información</p>
+        <div class="min-w-0 flex-1">
+          <h1 class="text-xl sm:text-2xl font-bold text-primary truncate">Crear Rol</h1>
+          <p class="text-sm sm:text-base text-secondary">Agregar nueva información</p>
         </div>
       </div>
     </div>
@@ -193,7 +194,7 @@
               class="px-4 py-2 text-sm font-medium text-inverse bg-primary-600 hover:bg-primary-700 rounded-lg disabled:opacity-50 transition-colors"
               tabindex={ 4 }
             >
-              {loading ? 'Creando...' : 'Crear Role'}
+              {loading ? 'Creando...' : 'Crear Rol'}
             </button>
           </div>
         </form>

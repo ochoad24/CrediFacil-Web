@@ -13,6 +13,12 @@ export { default as LoadingOverlay } from './LoadingOverlay.svelte';
 export { default as ThemeToggle } from './ThemeToggle.svelte';
 export { default as UserPreferences } from './UserPreferences.svelte';
 
+// File Management Components
+export { default as FileUploader } from './FileUploader.svelte';
+export { default as FileList } from './FileList.svelte';
+export { default as FileItem } from './FileItem.svelte';
+export { default as FileViewer } from './FileViewer.svelte';
+
 // Select component types and helpers
 export type * from './Select.types';
 export { selectHelpers, createRoleSearchFunction } from './Select.types';

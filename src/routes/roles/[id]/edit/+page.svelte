@@ -1,8 +1,8 @@
 <!-- Auto-generated Edit Page for Role -->
 <script lang="ts">
   import { page } from '$app/stores';
-  import { PUBLIC_NAME_COMPANY } from '$env/static/public';
   import { goto } from '$app/navigation';
+  import { PUBLIC_NAME_COMPANY } from '$env/static/public';
   import Button from '$lib/components/ui/Button.svelte';
   import Input from '$lib/components/ui/Input.svelte';
   import Select from '$lib/components/ui/Select.svelte';
@@ -13,7 +13,7 @@
   import { toast } from '$lib/utils/toast';
 
   // Page data
-  let roleId = $page.params.id;
+  let roleId = $page.params.id || '';
   let form: UpdateRoleRequest = {};
 
   // Component state
@@ -25,13 +25,19 @@
 
   // Load existing data
   async function loadData() {
+    if (!roleId) {
+      toast.error('ID no válido');
+      goto('/roles');
+      return;
+    }
+
     loadingStore.show('Cargando Role...');
     try {
       const response = await roleService.getById(roleId);
       const data = response.data;
       form = {
-        name: data.name,
-        description: data.description,
+        name: data.name ?? '',
+        description: data.description ?? '',
       };
 
     } catch (err) {
@@ -128,17 +134,18 @@
 </script>
 
 <svelte:head>
-  <title>Editar Role - {PUBLIC_NAME_COMPANY}</title>
+  <title>Editar Rol - {PUBLIC_NAME_COMPANY}</title>
 </svelte:head>
 
-<div class="p-6 bg-page min-h-screen">
+<div class="p-4 sm:p-6 bg-page min-h-screen">
   <div class="max-w-2xl mx-auto">
     <div class="mb-6">
-      <div class="flex items-center space-x-4">
+      <!-- Header responsive con espacio para botón hamburger en móvil -->
+      <div class="flex items-center space-x-4 lg:pr-0 pr-16">
         <button
           type="button"
           on:click={() => goto('/roles')}
-          class="text-secondary hover:text-primary"
+          class="text-secondary hover:text-primary transition-colors flex-shrink-0"
           title="Volver"
           aria-label="Volver"
         >
@@ -151,9 +158,9 @@
             ></path>
           </svg>
         </button>
-        <div>
-          <h1 class="text-2xl font-bold text-primary">Editar Role</h1>
-          <p class="text-secondary">Actualizar la información</p>
+        <div class="min-w-0 flex-1">
+          <h1 class="text-xl sm:text-2xl font-bold text-primary truncate">Editar Rol</h1>
+          <p class="text-sm sm:text-base text-secondary">Actualizar la información</p>
         </div>
       </div>
     </div>

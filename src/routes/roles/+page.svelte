@@ -1,14 +1,16 @@
 <!-- Auto-generated List Page for Role -->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { PUBLIC_NAME_COMPANY } from '$env/static/public';
 	import { goto } from '$app/navigation';
+	import { PUBLIC_NAME_COMPANY } from '$env/static/public';
 	import { roleService } from '$lib/services/roles/roleService';
 	import type { Role, RoleSearchParams } from '$lib/types/role';
 	import DataTable from '$lib/components/ui/DataTable.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import { confirmation } from '$lib/stores/confirmation';
 	import type { Column, PaginationInfo, SortDirection } from '$lib/types/datatable';
+	import { authStore } from '$lib/stores/auth.svelte';
+	import PermissionGuard from '$lib/components/PermissionGuard.svelte';
 
 	let roles: Role[] = [];
 	let pagination: PaginationInfo = {
@@ -86,16 +88,19 @@
 			};
 
 			const response = await roleService.getAll(params);
-			roles = response.data;
+			// Asegurar que siempre sea un array, incluso si la respuesta es null/undefined
+			roles = Array.isArray(response.data) ? response.data : [];
 			pagination = {
-				page: response.pagination.current_page,
-				limit: response.pagination.limit,
-				total: response.pagination.total,
-				totalPages: response.pagination.total_pages
+				page: response.pagination.current_page || page,
+				limit: response.pagination.limit || limit,
+				total: response.pagination.total || 0,
+				totalPages: response.pagination.total_pages || 0
 			};
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Error al cargar roles';
 			console.error('Error loading roles:', err);
+			// En caso de error, asegurar que el array esté vacío
+			roles = [];
 		} finally {
 			loading = false;
 		}
@@ -104,7 +109,7 @@
 	async function deleteRole(id: string, name: string) {
 		const confirmed = await confirmation.danger(
 			`¿Estás seguro de que quieres eliminar "${name}"? Esta acción no se puede deshacer.`,
-			'Eliminar Role'
+			'Eliminar Rol'
 		);
 
 		if (!confirmed) return;
@@ -113,7 +118,7 @@
 			await roleService.delete(id);
 			await loadRoles(pagination.page, pagination.limit, searchTerm, sortKey, sortDirection);
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Error al eliminar role';
+			error = err instanceof Error ? err.message : 'Error al eliminar rol';
 		}
 	}
 
@@ -179,29 +184,33 @@
   <title>Roles - {PUBLIC_NAME_COMPANY}</title>
 </svelte:head>
 
-<div class="p-6">
+<div class="p-4 sm:p-6">
 	<div class="mb-6">
-		<div class="flex justify-between items-center">
-			<div>
-				<h1 class="text-2xl font-bold text-primary">Roles</h1>
-				<p class="text-secondary">Gestiona los roles del sistema</p>
+		<!-- Header responsive: stack en móvil, horizontal en desktop -->
+		<!-- Agregamos pr-16 en móvil para dar espacio al botón hamburger del sidebar -->
+		<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 lg:pr-0 pr-16">
+			<div class="min-w-0 flex-1">
+				<h1 class="text-xl sm:text-2xl font-bold text-primary">Roles</h1>
+				<p class="text-sm sm:text-base text-secondary">Gestiona los roles del sistema</p>
 			</div>
-			<Button
-				on:click={() => goto('/roles/create')}
-				variant="primary"
-				size="md"
-				className="flex items-center gap-2"
-			>
-				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-					></path>
-				</svg>
-				Nuevo Role
-			</Button>
+			<PermissionGuard permission="roles.create">
+				<Button
+					on:click={() => goto('/roles/create')}
+					variant="primary"
+					size="md"
+					className="flex items-center justify-center gap-2 w-full sm:w-auto shadow-sm hover:shadow-md transition-all active:scale-[0.98]"
+				>
+					<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+						></path>
+					</svg>
+					<span>Nuevo Rol</span>
+				</Button>
+			</PermissionGuard>
 		</div>
 	</div>
 
@@ -219,7 +228,7 @@
 		{sortKey}
 		{sortDirection}
 		searchPlaceholder="Buscar roles... (presiona Enter)"
-		emptyMessage="No se encontraron roles. Comienza creando un nuevo role."
+		emptyMessage="No se encontraron roles. Comienza creando un nuevo rol."
 		on:search={handleSearch}
 		on:page-change={handlePageChange}
 		on:limit-change={handleLimitChange}
@@ -231,7 +240,7 @@
 					on:click={() => goto(`/roles/${(item as unknown as Role).id}`)}
 					class="btn-icon btn-icon-neutral"
 					title="Ver detalles"
-					aria-label="Ver detalles del role"
+					aria-label="Ver detalles del rol"
 				>
 					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
@@ -248,36 +257,40 @@
 						></path>
 					</svg>
 				</button>
-				<button
-					on:click={() => goto(`/roles/${(item as unknown as Role).id}/edit`)}
-					class="btn-icon btn-icon-primary"
-					title="Editar"
-					aria-label="Editar role"
-				>
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-						></path>
-					</svg>
-				</button>
-				<button
-					on:click={() => deleteRole((item as unknown as Role).id, (item as unknown as Role).name)}
-					class="btn-icon btn-icon-danger"
-					title="Eliminar"
-					aria-label="Eliminar role"
-				>
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-						></path>
-					</svg>
-				</button>
+				{#if authStore.hasPermission('roles.update')}
+					<button
+						on:click={() => goto(`/roles/${(item as unknown as Role).id}/edit`)}
+						class="btn-icon btn-icon-primary"
+						title="Editar"
+						aria-label="Editar rol"
+					>
+						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+							></path>
+						</svg>
+					</button>
+				{/if}
+				{#if authStore.hasPermission('roles.delete')}
+					<button
+						on:click={() => deleteRole((item as unknown as Role).id, (item as unknown as Role).name)}
+						class="btn-icon btn-icon-danger"
+						title="Eliminar"
+						aria-label="Eliminar rol"
+					>
+						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+							></path>
+						</svg>
+					</button>
+				{/if}
 			</div>
 		</svelte:fragment>
 	</DataTable>

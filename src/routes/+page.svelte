@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { PUBLIC_NAME_COMPANY } from '$env/static/public';
 	import { fly } from 'svelte/transition';
-	import { user } from '$lib/stores/auth';
+	import { authStore } from '$lib/stores/auth.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
 	import CardContent from '$lib/components/ui/CardContent.svelte';
 	import CardHeader from '$lib/components/ui/CardHeader.svelte';
@@ -106,7 +106,7 @@
 				</svg>
 				<div class="flex-1 min-w-0">
 					<h1 class="text-2xl sm:text-3xl md:text-4xl font-bold break-words">
-						{getGreeting()}, {$user?.name || 'Usuario'}!
+						{getGreeting()}, {authStore.state.user?.name || 'Usuario'}!
 					</h1>
 					<p class="text-primary-100 text-base sm:text-lg mt-1 sm:mt-2">
 						Bienvenido a tu plataforma de gestión financiera
@@ -190,13 +190,13 @@
 						<div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
 							<span class="text-muted-foreground font-medium sm:font-normal">Nombre:</span>
 							<span class="text-foreground font-medium break-words">
-								{$user?.name || 'No disponible'}
+								{authStore.state.user?.name || 'No disponible'}
 							</span>
 						</div>
 						<div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
 							<span class="text-muted-foreground font-medium sm:font-normal">Usuario:</span>
 							<span class="text-foreground font-medium break-all">
-								{$user?.username || 'No disponible'}
+								{authStore.state.user?.username || 'No disponible'}
 							</span>
 						</div>
 					</div>

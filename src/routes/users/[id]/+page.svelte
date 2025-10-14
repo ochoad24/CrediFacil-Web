@@ -95,13 +95,15 @@
 	<title>{user ? `${user.name} - Usuario` : 'Detalle de Usuario'} - {PUBLIC_NAME_COMPANY}</title>
 </svelte:head>
 
-<div class="p-6 bg-page min-h-screen">
+<div class="p-4 sm:p-6 bg-page min-h-screen">
 	<div class="mb-6">
-		<div class="flex items-center justify-between">
+		<!-- Header responsive: stack en móvil, horizontal en desktop -->
+		<!-- Agregamos pr-16 en móvil para dar espacio al botón hamburger del sidebar -->
+		<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 lg:pr-0 pr-16">
 			<div class="flex items-center space-x-4">
 				<button
 					on:click={handleBack}
-					class="text-tertiary hover:text-secondary"
+					class="text-tertiary hover:text-secondary transition-colors flex-shrink-0"
 					title="Volver a usuarios"
 					aria-label="Volver a usuarios"
 				>
@@ -114,21 +116,23 @@
 						></path>
 					</svg>
 				</button>
-				<div>
-					<h1 class="text-2xl font-bold text-primary">
+				<div class="min-w-0 flex-1">
+					<h1 class="text-xl sm:text-2xl font-bold text-primary truncate">
 						{user ? user.name : 'Detalle de Usuario'}
 					</h1>
-					<p class="text-secondary">Información completa del usuario</p>
+					<p class="text-sm sm:text-base text-secondary">Información completa del usuario</p>
 				</div>
 			</div>
 
 			{#if user}
-				<div class="flex space-x-3">
+				<!-- Botones de acción responsive -->
+				<div class="flex flex-col xs:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
 					<button
 						on:click={() => goto(`/users/${user!.id}/edit`)}
-						class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+						class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.98] font-medium"
+						title="Editar usuario"
 					>
-						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path
 								stroke-linecap="round"
 								stroke-linejoin="round"
@@ -136,13 +140,14 @@
 								d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
 							></path>
 						</svg>
-						Editar
+						<span>Editar</span>
 					</button>
 					<button
 						on:click={deleteUser}
-						class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+						class="bg-red-600 hover:bg-red-700 active:bg-red-800 text-white px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.98] font-medium"
+						title="Eliminar usuario"
 					>
-						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path
 								stroke-linecap="round"
 								stroke-linejoin="round"
@@ -150,7 +155,7 @@
 								d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
 							></path>
 						</svg>
-						Eliminar
+						<span>Eliminar</span>
 					</button>
 				</div>
 			{/if}

@@ -15,6 +15,9 @@
 	export let required: boolean = false;
 	export let id: string = '';
 
+	// Generate unique ID if not provided
+	const uniqueId = id || `textarea-${Math.random().toString(36).substring(2, 11)}`;
+
 	// Prevenir hydration mismatch - solo mostrar error después de hidratación
 	$: showError = browser && error;
 
@@ -28,17 +31,17 @@
 
 <div class="w-full">
 	{#if label}
-		<label class="block text-sm font-medium text-foreground mb-2">
+		<label for={uniqueId} class="block text-sm font-medium text-foreground mb-2">
 			{label}
 		</label>
 	{/if}
 	<textarea
+		id={uniqueId}
 		bind:value
 		{placeholder}
 		{disabled}
-		{autofocus}
+		{...autofocus ? { autofocus: true } : {}}
 		{required}
-		{id}
 		tabindex={tabindex}
 		{rows}
 		class={textareaClasses}

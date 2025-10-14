@@ -9,12 +9,12 @@
 	import { toast } from '$lib/utils/toast';
 
 	let form = {
-		email_or_username: '',
+		username: '',
 		password: ''
 	};
 
 	let errors = {
-		email_or_username: '',
+		username: '',
 		password: ''
 	};
 
@@ -28,14 +28,14 @@
 
 	// Validación simple
 	function validateForm(): boolean {
-		errors = { email_or_username: '', password: '' };
+		errors = { username: '', password: '' };
 		let isValid = true;
 
-		if (!form.email_or_username) {
-			errors.email_or_username = 'El email o usuario es requerido';
+		if (!form.username) {
+			errors.username = 'El email o usuario es requerido';
 			isValid = false;
-		} else if (form.email_or_username.length < 3) {
-			errors.email_or_username = 'Debe tener al menos 3 caracteres';
+		} else if (form.username.length < 3) {
+			errors.username = 'Debe tener al menos 3 caracteres';
 			isValid = false;
 		}
 
@@ -74,16 +74,16 @@
 
 			await withLoading(
 				async () => {
-					const { authStore } = await import('$lib/stores/auth');
+					const { authStore } = await import('$lib/stores/auth.svelte');
 
 					const response = await authStore.login({
-						email_or_username: form.email_or_username,
+						username: form.username,
 						password: form.password,
 						recaptcha_token: recaptchaToken
 					});
 
 					// Mostrar toast de bienvenida personalizado
-					const userName = response?.user?.name || form.email_or_username;
+					const userName = response?.user?.name || form.username;
 					toast.success(`¡Bienvenido de vuelta, ${userName}! Has iniciado sesión exitosamente.`);
 
 					// Redirigir a la URL solicitada o al dashboard
@@ -112,11 +112,11 @@
 					errors.password = errorMessage;
 					toast.error('Credenciales incorrectas. Por favor verifica tus datos.');
 				} else {
-					errors.email_or_username = errorMessage;
+					errors.username = errorMessage;
 					toast.error('Error al iniciar sesión. ' + errorMessage);
 				}
 			} else {
-				errors.email_or_username = errorMessage;
+				errors.username = errorMessage;
 				toast.error('Error de conexión. No se pudo establecer comunicación con el servidor.');
 			}
 		} finally {
@@ -169,11 +169,11 @@
 				<form on:submit={handleSubmit} class="space-y-6">
 					<!-- Email or Username Field -->
 					<Input
-						bind:value={form.email_or_username}
+						bind:value={form.username}
 						type="text"
 						label="Email o Usuario"
 						placeholder="Ingresa tu email o usuario"
-						error={errors.email_or_username}
+						error={errors.username}
 					/>
 
 					<!-- Password Field -->

@@ -7,6 +7,8 @@
 	import Button from '$lib/components/ui/Button.svelte';
 	import { confirmation } from '$lib/stores/confirmation';
 	import type { Column, PaginationInfo, SortDirection } from '$lib/types/datatable';
+	import { authStore } from '$lib/stores/auth.svelte';
+	import PermissionGuard from '$lib/components/PermissionGuard.svelte';
 
 	let users: User[] = [];
 	let pagination: PaginationInfo = {
@@ -214,22 +216,24 @@
 				<h1 class="text-2xl font-bold text-primary">Usuarios</h1>
 				<p class="text-secondary">Gestiona los usuarios del sistema</p>
 			</div>
-			<Button
-				on:click={() => goto('/users/create')}
-				variant="primary"
-				size="md"
-				className="flex items-center gap-2"
-			>
-				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-					></path>
-				</svg>
-				Nuevo Usuario
-			</Button>
+			<PermissionGuard permission="users.create">
+				<Button
+					on:click={() => goto('/users/create')}
+					variant="primary"
+					size="md"
+					className="flex items-center gap-2"
+				>
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+						></path>
+					</svg>
+					Nuevo Usuario
+				</Button>
+			</PermissionGuard>
 		</div>
 	</div>
 
@@ -276,22 +280,24 @@
 						></path>
 					</svg>
 				</button>
-				<button
-					on:click={() => goto(`/users/${(item as unknown as User).id}/edit`)}
-					class="btn-icon btn-icon-primary"
-					title="Editar"
-					aria-label="Editar usuario"
-				>
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-						></path>
-					</svg>
-				</button>
-				{#if (item as unknown as User).status.toUpperCase() === 'BLOCKED'}
+				{#if authStore.hasPermission('users.update')}
+					<button
+						on:click={() => goto(`/users/${(item as unknown as User).id}/edit`)}
+						class="btn-icon btn-icon-primary"
+						title="Editar"
+						aria-label="Editar usuario"
+					>
+						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+							></path>
+						</svg>
+					</button>
+				{/if}
+				{#if (item as unknown as User).status.toUpperCase() === 'BLOCKED' && authStore.hasPermission('users.unlock')}
 					<button
 						on:click={() => unlockUser((item as unknown as User).id, (item as unknown as User).name)}
 						class="btn-icon btn-icon-warning"
@@ -308,21 +314,23 @@
 						</svg>
 					</button>
 				{/if}
-				<button
-					on:click={() => deleteUser((item as unknown as User).id, (item as unknown as User).name)}
-					class="btn-icon btn-icon-danger"
-					title="Eliminar"
-					aria-label="Eliminar usuario"
-				>
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-						></path>
-					</svg>
-				</button>
+				{#if authStore.hasPermission('users.delete')}
+					<button
+						on:click={() => deleteUser((item as unknown as User).id, (item as unknown as User).name)}
+						class="btn-icon btn-icon-danger"
+						title="Eliminar"
+						aria-label="Eliminar usuario"
+					>
+						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+							></path>
+						</svg>
+					</button>
+				{/if}
 			</div>
 		</svelte:fragment>
 	</DataTable>

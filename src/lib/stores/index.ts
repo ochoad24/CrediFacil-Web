@@ -1,5 +1,6 @@
 // Central export for all stores
-export * from './auth';
+// Note: auth.svelte.ts uses Svelte 5 Runes, import directly from './auth.svelte'
+export * from './auth.svelte';
 export * from './credits';
 export * from './loading';
 export * from './cookies';

@@ -1,9 +1,17 @@
-// Auto-generated Page Loader for CompanyTypes List
+// Auto-generated Page Loader for Agencies List
 // Do not edit manually - use generate-crud-frontend command
 
 import type { PageLoad } from './$types';
+import { requireAuth } from '$lib/utils/auth-guard';
+import { requirePermission } from '$lib/utils/permission-guard';
 
 export const load: PageLoad = async ({ url }) => {
+  await requireAuth();
+  requirePermission({
+    permission: 'agencies.read',
+    redirectTo: '/'
+  });
+
   // Extract search parameters for initial state
   const page = parseInt(url.searchParams.get('page') || '1');
   const limit = parseInt(url.searchParams.get('limit') || '10');

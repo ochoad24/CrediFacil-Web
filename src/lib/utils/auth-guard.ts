@@ -3,7 +3,7 @@ import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { get } from 'svelte/store';
 import { cookies } from '$lib/utils/cookies';
-import { authStore } from '$lib/stores/auth';
+import { authStore } from '$lib/stores/auth.svelte';
 
 /**
  * Configuración de rutas de autenticación
@@ -68,10 +68,8 @@ export async function requireAuth(): Promise<void> {
 	}
 
 	// Primero verificar el estado del store (más confiable)
-	const currentAuthState = get(authStore);
-
 	// Si el store dice que está autenticado, confiar en eso
-	if (currentAuthState.isAuthenticated && currentAuthState.user) {
+	if (authStore.state.isAuthenticated && authStore.state.user) {
 		return;
 	}
 
@@ -87,8 +85,7 @@ export async function requireAuth(): Promise<void> {
 	await authStore.checkAuth();
 
 	// Verificar nuevamente después de checkAuth
-	const updatedAuthState = get(authStore);
-	if (!updatedAuthState.isAuthenticated) {
+	if (!authStore.state.isAuthenticated) {
 		const returnUrl = pathname !== '/' ? `?returnUrl=${encodeURIComponent(pathname)}` : '';
 		await goto(`${authConfig.loginRoute}${returnUrl}`, { replaceState: true });
 	}

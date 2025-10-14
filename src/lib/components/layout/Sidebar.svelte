@@ -4,22 +4,21 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { fly } from 'svelte/transition';
-	import { authStore, user } from '$lib/stores/auth';
+	import { authStore } from '$lib/stores/auth.svelte';
 	import { cn } from '$lib/utils/cn';
 	import { browser } from '$app/environment';
 	import { themeStore } from '$lib/stores/cookies';
 	import {
 		House,
 		Users,
-		CreditCard,
-		ChartArea,
 		ChevronLeft,
 		ChevronRight,
 		LogOut,
 		Sun,
 		Moon,
 		Monitor,
-		Layers
+		Layers,
+		Shield
 	} from '@lucide/svelte';
 	import type { SvelteComponent } from 'svelte';
 
@@ -98,7 +97,7 @@
 		icon: any;
 		label: string;
 		badge?: string;
-		permissions?: string | string[];
+		permissions?: string[];
 	}
 
 	const menuItems: MenuItem[] = [{
@@ -106,42 +105,49 @@
 			href: '/',
 			icon: House,
 			label: 'Inicio'
+			// Sin permisos = accesible para todos
 		},
 		{
 			key: 'users',
 			href: '/users',
 			icon: Users,
-			label: 'Usuarios'
-		},
-		{
-			key: 'credits',
-			href: '/credits',
-			icon: CreditCard,
-			label: 'Créditos'
-		},
-		{
-			key: 'clients',
-			href: '/clients',
-			icon: Users, // Using Users icon for clients as well
-			label: 'Clientes'
-		},
-		{
-			key: 'reports',
-			href: '/reports',
-			icon: ChartArea,
-			label: 'Reportes'
+			label: 'Usuarios',
+			permissions: ['users.read']
 		},
 		{
 			key: 'roles',
 			href: '/roles',
 			icon: Layers,
-			label: 'Roles'
+			label: 'Roles',
+			permissions: ['roles.read']
 		},
 		{
-			key: 'companytypes',
-			href: '/companytypes',
+			key: 'permissions',
+			href: '/permissions',
+			icon: Shield,
+			label: 'Permisos',
+			permissions: ['permissions.manage']
+		},
+		{
+			key: 'documenttypes',
+			href: '/documenttypes',
 			icon: Layers,
-			label: 'Tipo de empresas'
+			label: 'Tipos de Documentos',
+			permissions: ['documenttypes.read']
+		},
+		{
+			key: 'companies',
+			href: '/companies',
+			icon: Layers,
+			label: 'Compañías',
+			permissions: ['companies.read']
+		},
+		{
+			key: 'agencies',
+			href: '/agencies',
+			icon: Layers,
+			label: 'Agencias',
+			permissions: ['agencies.read']
 		},
 ];
 
@@ -150,11 +156,20 @@
 	$: sidebarWidth = isCollapsed ? '80px' : '280px';
 	$: showOverlay = isMobile && isMobileMenuOpen;
 
-	// Reactive para forzar actualización de elementos activos
-	$: activeItems = menuItems.map((item) => ({
-		...item,
-		active: isActive(item.href, currentPath) // Pasar currentPath explícitamente
-	}));
+	// Filtrar items según permisos y marcar activos
+	$: visibleItems = menuItems
+		.filter((item) => {
+			// Si no tiene permisos definidos, es visible para todos
+			if (!item.permissions || item.permissions.length === 0) {
+				return true;
+			}
+			// Si tiene permisos, verificar que tenga al menos uno
+			return authStore.hasAnyPermission(item.permissions);
+		})
+		.map((item) => ({
+			...item,
+			active: isActive(item.href, currentPath)
+		}));
 
 	// Functions
 	function toggleCollapsed() {
@@ -302,16 +317,16 @@
 				class="h-10 w-10 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center"
 			>
 				<span class="text-sm font-medium text-white">
-					{$user?.name?.charAt(0).toUpperCase() || 'U'}
+					{authStore.state.user?.name?.charAt(0).toUpperCase() || 'U'}
 				</span>
 			</div>
 			{#if !isCollapsed}
 				<div class="flex-1 min-w-0" in:fly={{ opacity: 0, x: -10, duration: 200 }} out:fly={{ opacity: 0, x: -10, duration: 150 }}>
 					<p class="text-sm font-medium truncate text-foreground">
-						{$user?.name || 'Usuario'}
+						{authStore.state.user?.name || 'Usuario'}
 					</p>
 					<p class="text-xs truncate text-muted-foreground">
-						{$user?.username || 'user'}
+						{authStore.state.user?.username || 'user'}
 					</p>
 				</div>
 			{/if}
@@ -320,7 +335,7 @@
 
 	<!-- Navigation -->
 	<nav class="flex-1 p-4 space-y-1">
-		{#each activeItems as item (item.key)}
+		{#each visibleItems as item (item.key)}
 			<a
 				href={item.href}
 				on:click={closeMobileMenu}

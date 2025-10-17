@@ -80,6 +80,14 @@
 		}
 	}
 
+	function formatBoolean(value: boolean): string {
+		return value ? 'Verdadero' : 'Falso';
+	}
+
+	function getBooleanBadgeClass(value: boolean): string {
+		return value ? 'badge-status-active' : 'badge-status-inactive';
+	}
+
 	function handleBack() {
 		goto('/documenttypes');
 	}
@@ -93,7 +101,7 @@
 </script>
 
 <svelte:head>
-	<title>Detalle de Tipos de Documento - {PUBLIC_NAME_COMPANY}</title>
+	<title>Detalle de Tipo de documento - {PUBLIC_NAME_COMPANY}</title>
 </svelte:head>
 
 <div class="p-4 sm:p-6 bg-page min-h-screen">
@@ -119,9 +127,9 @@
 				</button>
 				<div class="min-w-0 flex-1">
 					<h1 class="text-xl sm:text-2xl font-bold text-primary truncate">
-						{documenttype ? documenttype!.name : 'Detalle de Tipos de Documento'}
+						{documenttype ? documenttype!.name : 'Detalle de Tipo de documento'}
 					</h1>
-					<p class="text-sm sm:text-base text-secondary">Información completa del Tipos de Documento</p>
+					<p class="text-sm sm:text-base text-secondary">Información completa del Tipo de documento</p>
 				</div>
 			</div>
 
@@ -132,7 +140,7 @@
 						<button
 							on:click={() => goto(`/documenttypes/${documenttype!.id}/edit`)}
 							class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.98] font-medium"
-							title="Editar Tipos de Documento"
+							title="Editar Tipo de documento"
 						>
 							<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
@@ -149,7 +157,7 @@
 						<button
 							on:click={deleteDocumentType}
 							class="bg-red-600 hover:bg-red-700 active:bg-red-800 text-white px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.98] font-medium"
-							title="Eliminar Tipos de Documento"
+							title="Eliminar Tipo de documento"
 						>
 							<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
@@ -170,7 +178,7 @@
 	{#if loading}
 		<div class="text-center py-8">
 			<div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-			<p class="mt-2 text-secondary">Cargando Tipos de Documento...</p>
+			<p class="mt-2 text-secondary">Cargando Tipo de documento...</p>
 		</div>
 	{:else if error}
 		<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
@@ -303,7 +311,7 @@
 										<svg class="w-5 h-5 text-tertiary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
 										</svg>
-										<span class="text-primary">{documenttype.createdbyid || '-'}</span>
+										<span class="text-primary">{documenttype.created_by_id || '-'}</span>
 									</div>
 								</div>
 							</div>
@@ -314,7 +322,7 @@
 										<svg class="w-5 h-5 text-tertiary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
 										</svg>
-										<span class="text-primary">{documenttype.updatedbyid || '-'}</span>
+										<span class="text-primary">{documenttype.updated_by_id || '-'}</span>
 									</div>
 								</div>
 							</div>
@@ -331,7 +339,7 @@
 						<h3 class="text-lg font-medium text-primary mb-4">Información del Sistema</h3>
 						<div class="space-y-4">
 							<div>
-								<dt class="text-sm font-medium text-tertiary">ID del Tipos de Documento</dt>
+								<dt class="text-sm font-medium text-tertiary">ID del Tipo de documento</dt>
 								<dd class="mt-1 text-sm text-primary font-mono bg-muted px-2 py-1 rounded">
 									{documenttype!.id}
 								</dd>

@@ -135,20 +135,6 @@
 			label: 'Tipos de Documentos',
 			permissions: ['documenttypes.read']
 		},
-		{
-			key: 'companies',
-			href: '/companies',
-			icon: Layers,
-			label: 'Compañías',
-			permissions: ['companies.read']
-		},
-		{
-			key: 'agencies',
-			href: '/agencies',
-			icon: Layers,
-			label: 'Agencias',
-			permissions: ['agencies.read']
-		},
 ];
 
 	// Reactive statements

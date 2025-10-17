@@ -2,7 +2,6 @@
 // Do not edit manually - use generate-crud-frontend command
 
 export interface DocumentType {
-  id: string;
   code: string;
   name: string;
   description: string | null;
@@ -14,10 +13,11 @@ export interface DocumentType {
   module: string;
   status: string;
   is_system: boolean;
-  createdbyid: string | null;
-  createdbyuser: any;
-  updatedbyid: string | null;
-  updatedbyuser: any;
+  created_by_id: string | null;
+  updated_by_id: string | null;
+  created_by: any | null;
+  updated_by: any | null;
+  id: string;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
@@ -31,13 +31,13 @@ export interface CreateDocumentTypeRequest {
   prefix: string;
   include_year?: boolean;
   include_month?: boolean;
-  number_length: number;
+  number_length?: number;
   format: string;
   module: string;
   status?: string;
   is_system?: boolean;
-  createdbyid?: string | undefined;
-  updatedbyid?: string | undefined;
+  created_by_id?: string | undefined;
+  updated_by_id?: string | undefined;
 
 }
 
@@ -53,8 +53,8 @@ export interface UpdateDocumentTypeRequest {
   module?: string;
   status?: string;
   is_system?: boolean;
-  createdbyid?: string | undefined;
-  updatedbyid?: string | undefined;
+  created_by_id?: string | undefined;
+  updated_by_id?: string | undefined;
 
 }
 

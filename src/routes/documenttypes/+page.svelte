@@ -73,11 +73,10 @@
 			title: 'Incluir año',
 			sortable: true,
 			render: (_, item) => {
-				const isActiveClass = item.include_year
-					? 'badge-status-active'
-					: 'badge-status-inactive';
-				const isActiveText = item.include_year ? 'Sí' : 'No';
-				return `<span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${isActiveClass}">${isActiveText}</span>`;
+				const boolValue = item.include_year as boolean;
+				const badgeClass = getBooleanBadgeClass(boolValue);
+				const text = formatBoolean(boolValue);
+				return `<span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${badgeClass}">${text}</span>`;
 			}
 		},
 		{
@@ -85,11 +84,10 @@
 			title: 'Incluir mes',
 			sortable: true,
 			render: (_, item) => {
-				const isActiveClass = item.include_month
-					? 'badge-status-active'
-					: 'badge-status-inactive';
-				const isActiveText = item.include_month ? 'Sí' : 'No';
-				return `<span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${isActiveClass}">${isActiveText}</span>`;
+				const boolValue = item.include_month as boolean;
+				const badgeClass = getBooleanBadgeClass(boolValue);
+				const text = formatBoolean(boolValue);
+				return `<span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${badgeClass}">${text}</span>`;
 			}
 		},
 		{
@@ -121,11 +119,22 @@
 			}
 		},
 		{
-			key: 'createdbyuser',
-			title: 'Creado por el usuario',
+			key: 'is_system',
+			title: 'Es sistema',
+			sortable: true,
+			render: (_, item) => {
+				const boolValue = item.is_system as boolean;
+				const badgeClass = getBooleanBadgeClass(boolValue);
+				const text = formatBoolean(boolValue);
+				return `<span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${badgeClass}">${text}</span>`;
+			}
+		},
+		{
+			key: 'created_by',
+			title: 'Creado por',
 			sortable: false,
 			render: (_, item) => {
-				const relation = item.createdbyuser as any;
+				const relation = item.created_by as any;
 				if (!relation) return '<span class="text-tertiary">-</span>';
 				// Try common display fields in order of preference
 				const displayValue = relation.name || relation.title || relation.label || relation.code || relation.id || '-';
@@ -133,11 +142,11 @@
 			}
 		},
 		{
-			key: 'updatedbyuser',
-			title: 'Actualizado por el usuario',
+			key: 'updated_by',
+			title: 'Actualizado por',
 			sortable: false,
 			render: (_, item) => {
-				const relation = item.updatedbyuser as any;
+				const relation = item.updated_by as any;
 				if (!relation) return '<span class="text-tertiary">-</span>';
 				// Try common display fields in order of preference
 				const displayValue = relation.name || relation.title || relation.label || relation.code || relation.id || '-';
@@ -175,7 +184,7 @@
 				totalPages: response.pagination.total_pages || 0
 			};
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Error al cargar tipos de documentos';
+			error = err instanceof Error ? err.message : 'Error al cargar tipo de documentos';
 			console.error('Error loading documenttypes:', err);
 			// En caso de error, asegurar que el array esté vacío
 			documenttypes = [];
@@ -187,7 +196,7 @@
 	async function deleteDocumentType(id: string, name: string) {
 		const confirmed = await confirmation.danger(
 			`¿Estás seguro de que quieres eliminar "${name}"? Esta acción no se puede deshacer.`,
-			'Eliminar Tipos de Documento'
+			'Eliminar Tipo de documento'
 		);
 
 		if (!confirmed) return;
@@ -196,7 +205,7 @@
 			await documenttypeService.delete(id);
 			await loadDocumentTypes(pagination.page, pagination.limit, searchTerm, sortKey, sortDirection);
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Error al eliminar tipos de documento';
+			error = err instanceof Error ? err.message : 'Error al eliminar tipo de documento';
 		}
 	}
 
@@ -234,6 +243,14 @@
 		}
 	}
 
+	function formatBoolean(value: boolean): string {
+		return value ? 'Verdadero' : 'Falso';
+	}
+
+	function getBooleanBadgeClass(value: boolean): string {
+		return value ? 'badge-status-active' : 'badge-status-inactive';
+	}
+
 	function handleSearch(event: CustomEvent<{ search: string }>) {
 		searchTerm = event.detail.search;
 		loadDocumentTypes(1, pagination.limit, searchTerm, sortKey, sortDirection);
@@ -259,7 +276,7 @@
 </script>
 
 <svelte:head>
-  <title>Tipos de Documentos - {PUBLIC_NAME_COMPANY}</title>
+  <title>Tipo de documentos - {PUBLIC_NAME_COMPANY}</title>
 </svelte:head>
 
 <div class="p-4 sm:p-6">
@@ -268,8 +285,8 @@
 		<!-- Agregamos pr-16 en móvil para dar espacio al botón hamburger del sidebar -->
 		<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 lg:pr-0 pr-16">
 			<div class="min-w-0 flex-1">
-				<h1 class="text-xl sm:text-2xl font-bold text-primary">Tipos de Documentos</h1>
-				<p class="text-sm sm:text-base text-secondary">Gestiona los tipos de documentos del sistema</p>
+				<h1 class="text-xl sm:text-2xl font-bold text-primary">Tipo de documentos</h1>
+				<p class="text-sm sm:text-base text-secondary">Gestiona los tipo de documentos del sistema</p>
 			</div>
 			<PermissionGuard permission="documenttypes.create">
 				<Button
@@ -286,7 +303,7 @@
 							d="M12 6v6m0 0v6m0-6h6m-6 0H6"
 						></path>
 					</svg>
-					<span>Nuevo Tipos de Documento</span>
+					<span>Nuevo Tipo de documento</span>
 				</Button>
 			</PermissionGuard>
 		</div>
@@ -305,8 +322,8 @@
 		{pagination}
 		{sortKey}
 		{sortDirection}
-		searchPlaceholder="Buscar tipos de documentos... (presiona Enter)"
-		emptyMessage="No se encontraron tipos de documentos. Comienza creando un nuevo tipos de documento."
+		searchPlaceholder="Buscar tipo de documentos... (presiona Enter)"
+		emptyMessage="No se encontraron tipo de documentos. Comienza creando un nuevo tipo de documento."
 		on:search={handleSearch}
 		on:page-change={handlePageChange}
 		on:limit-change={handleLimitChange}
@@ -318,7 +335,7 @@
 					on:click={() => goto(`/documenttypes/${(item as unknown as DocumentType).id}`)}
 					class="btn-icon btn-icon-neutral"
 					title="Ver detalles"
-					aria-label="Ver detalles del tipos de documento"
+					aria-label="Ver detalles del tipo de documento"
 				>
 					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
@@ -340,7 +357,7 @@
 						on:click={() => goto(`/documenttypes/${(item as unknown as DocumentType).id}/edit`)}
 						class="btn-icon btn-icon-primary"
 						title="Editar"
-						aria-label="Editar tipos de documento"
+						aria-label="Editar tipo de documento"
 					>
 						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path
@@ -357,7 +374,7 @@
 						on:click={() => deleteDocumentType((item as unknown as DocumentType).id, (item as unknown as DocumentType).name)}
 						class="btn-icon btn-icon-danger"
 						title="Eliminar"
-						aria-label="Eliminar tipos de documento"
+						aria-label="Eliminar tipo de documento"
 					>
 						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path

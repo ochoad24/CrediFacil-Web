@@ -44,7 +44,9 @@
         include_year: data.include_year ?? false,
         include_month: data.include_month ?? false,
         number_length: data.number_length ?? 0,
+        format: data.format ?? '',
         module: data.module ?? '',
+        is_system: data.is_system ?? false,
       };
       userOptions = await documenttypeService.getUserOptions();
 
@@ -85,13 +87,12 @@
     }
     // Incluir año - Optional field validation
     // Incluir mes - Optional field validation
-    // Longitud del número - Required validation
-    if (!form.number_length) {
-      validationErrors.number_length = 'Longitud del número es requerido';
-    } else if (form.number_length.length < 4) {
-      validationErrors.number_length = 'Longitud del número debe tener al menos 4 caracteres';
-    } else if (form.number_length.length > 12) {
-      validationErrors.number_length = 'Longitud del número debe tener máximo 12 caracteres';
+    // Longitud del número - Optional field validation
+    // Formato - Required validation
+    if (!form.format?.trim()) {
+      validationErrors.format = 'Formato es requerido';
+    } else if (form.format.trim().length > 255) {
+      validationErrors.format = 'Formato debe tener máximo 255 caracteres';
     }
     // Módulo - Required validation
     if (!form.module?.trim()) {
@@ -99,6 +100,7 @@
     } else if (form.module.trim().length > 255) {
       validationErrors.module = 'Módulo debe tener máximo 255 caracteres';
     }
+    // Es sistema - Optional field validation
 
     return Object.keys(validationErrors).length === 0;
   }
@@ -170,7 +172,7 @@
 </script>
 
 <svelte:head>
-  <title>Editar Tipos de Documento - {PUBLIC_NAME_COMPANY}</title>
+  <title>Editar Tipo de documento - {PUBLIC_NAME_COMPANY}</title>
 </svelte:head>
 
 <div class="p-4 sm:p-6 bg-page min-h-screen">
@@ -195,7 +197,7 @@
           </svg>
         </button>
         <div class="min-w-0 flex-1">
-          <h1 class="text-xl sm:text-2xl font-bold text-primary truncate">Editar Tipos de Documento</h1>
+          <h1 class="text-xl sm:text-2xl font-bold text-primary truncate">Editar Tipo de documento</h1>
           <p class="text-sm sm:text-base text-secondary">Actualizar la información</p>
         </div>
       </div>
@@ -261,45 +263,67 @@
         />
       </div>
       <div>
-        <Input
-          id="include_year"
-          type="text"
-          bind:value={form.include_year}
-          label="Incluir año"
-          placeholder="Ingresa incluir año"
-          required={ false }
-          
-          tabindex={ 5 }
-          error={validationErrors.include_year}
-          on:input={() => clearFieldError('include_year')}
-        />
+        <div class="flex items-center pt-5">
+          <input
+            id="include_year"
+            type="checkbox"
+            bind:checked={form.include_year}
+            on:change={() => clearFieldError('include_year')}
+            tabindex={ 5 }
+            class="h-4 w-4 rounded border-border bg-surface text-primary-600 focus:ring-primary-500 focus:ring-offset-surface"
+          />
+          <label for="include_year" class="ml-3 block text-sm font-medium text-primary">
+            Incluir año
+          </label>
+        </div>
+        {#if validationErrors.include_year}
+          <p class="text-sm text-error mt-2">{validationErrors.include_year}</p>
+        {/if}
       </div>
       <div>
-        <Input
-          id="include_month"
-          type="text"
-          bind:value={form.include_month}
-          label="Incluir mes"
-          placeholder="Ingresa incluir mes"
-          required={ false }
-          
-          tabindex={ 6 }
-          error={validationErrors.include_month}
-          on:input={() => clearFieldError('include_month')}
-        />
+        <div class="flex items-center pt-5">
+          <input
+            id="include_month"
+            type="checkbox"
+            bind:checked={form.include_month}
+            on:change={() => clearFieldError('include_month')}
+            tabindex={ 6 }
+            class="h-4 w-4 rounded border-border bg-surface text-primary-600 focus:ring-primary-500 focus:ring-offset-surface"
+          />
+          <label for="include_month" class="ml-3 block text-sm font-medium text-primary">
+            Incluir mes
+          </label>
+        </div>
+        {#if validationErrors.include_month}
+          <p class="text-sm text-error mt-2">{validationErrors.include_month}</p>
+        {/if}
       </div>
       <div>
         <Input
           id="number_length"
           type="number"
           bind:value={form.number_length}
-          label="Longitud del número *"
+          label="Longitud del número"
           placeholder="Ingresa longitud del número"
-          required={ true }
+          required={ false }
           
           tabindex={ 7 }
           error={validationErrors.number_length}
           on:input={() => clearFieldError('number_length')}
+        />
+      </div>
+      <div>
+        <Input
+          id="format"
+          type="text"
+          bind:value={form.format}
+          label="Formato *"
+          placeholder="Ingresa formato"
+          required={ true }
+          
+          tabindex={ 8 }
+          error={validationErrors.format}
+          on:input={() => clearFieldError('format')}
         />
       </div>
       <div>
@@ -311,10 +335,28 @@
           placeholder="Ingresa módulo"
           required={ true }
           
-          tabindex={ 8 }
+          tabindex={ 9 }
           error={validationErrors.module}
           on:input={() => clearFieldError('module')}
         />
+      </div>
+      <div>
+        <div class="flex items-center pt-5">
+          <input
+            id="is_system"
+            type="checkbox"
+            bind:checked={form.is_system}
+            on:change={() => clearFieldError('is_system')}
+            tabindex={ 10 }
+            class="h-4 w-4 rounded border-border bg-surface text-primary-600 focus:ring-primary-500 focus:ring-offset-surface"
+          />
+          <label for="is_system" class="ml-3 block text-sm font-medium text-primary">
+            Es sistema
+          </label>
+        </div>
+        {#if validationErrors.is_system}
+          <p class="text-sm text-error mt-2">{validationErrors.is_system}</p>
+        {/if}
       </div>
 
           <div class="flex justify-end space-x-4 pt-6 border-t border-border">
@@ -323,7 +365,7 @@
               on:click={() => goto('/documenttypes')}
               disabled={loading}
               class="px-4 py-2 text-sm font-medium text-secondary bg-surface hover:bg-muted rounded-lg border border-border disabled:opacity-50 transition-colors"
-              tabindex={ 9 }
+              tabindex={ 11 }
             >
               Cancelar
             </button>
@@ -331,7 +373,7 @@
               type="submit"
               disabled={loading}
               class="px-4 py-2 text-sm font-medium text-inverse bg-primary-600 hover:bg-primary-700 rounded-lg disabled:opacity-50 transition-colors"
-              tabindex={ 10 }
+              tabindex={ 12 }
             >
               {loading ? 'Actualizando...' : 'Guardar Cambios'}
             </button>

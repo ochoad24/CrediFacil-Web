@@ -5,6 +5,7 @@
 	import { goto } from '$app/navigation';
 	import { userService, type User } from '$lib/services/users/userService';
 	import { confirmation } from '$lib/stores/confirmation';
+	import { formatUTCToLocal } from '$lib/utils/date';
 
 	let userId = '';
 	let user: User | null = null;
@@ -41,16 +42,6 @@
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Error al eliminar usuario';
 		}
-	}
-
-	function formatDate(dateString: string): string {
-		return new Date(dateString).toLocaleDateString('es-ES', {
-			year: 'numeric',
-			month: 'long',
-			day: '2-digit',
-			hour: '2-digit',
-			minute: '2-digit'
-		});
 	}
 
 	function getStatusBadgeClass(status: string): string {
@@ -260,13 +251,13 @@
 							<div>
 								<dt class="text-sm font-medium text-tertiary">Fecha de Creación</dt>
 								<dd class="mt-1 text-sm text-primary">
-									{formatDate(user.created_at)}
+									{formatUTCToLocal(user.created_at)}
 								</dd>
 							</div>
 							<div>
 								<dt class="text-sm font-medium text-tertiary">Última Actualización</dt>
 								<dd class="mt-1 text-sm text-primary">
-									{formatDate(user.updated_at)}
+									{formatUTCToLocal(user.updated_at)}
 								</dd>
 							</div>
 						</div>
